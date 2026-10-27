@@ -80,7 +80,8 @@ Then select an exact pin:
 node tools/runtime-artifacts.mjs \
   --manifest runtime-artifacts.lock.json --version 0.1.0-preview.2 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
-  --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios
+  --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios \
+  --timeout-ms 900000
 ```
 
 Without credentials, provide a directory containing the exact pinned archive:
@@ -99,6 +100,20 @@ only after rechecking its full hash and size. Missing access, missing targets,
 corrupt downloads and changed installed files fail explicitly. Tokens are sent
 only to the fixed GitHub Releases API repository path. Redirects are handled
 manually; signed GitHub storage URLs never receive Authorization.
+
+An artifact transfer has one total deadline for request headers, redirects and
+the complete body. The default is 900,000 ms (15 minutes); release metadata has
+a separate fixed 30,000 ms deadline. Set `--timeout-ms`, API `timeoutMs`, or
+`WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS` for slower authorized downloads. An explicit
+CLI/API value takes precedence over the environment, then the default applies.
+Values must be positive base-10 integer milliseconds, at most 3,600,000 (one hour);
+the API takes a number. Invalid values fail with `ERR_RUNTIME_OPTIONS` before
+network/cache work. The setting applies to network transfer, not offline/cache
+verification or archive extraction, and does not change the independent 8 GiB
+archive limit. Fetch failures, body read errors and timeouts return sanitized
+`ERR_RUNTIME_NETWORK`; partial files are removed and no installation is published.
+Integrity errors and local I/O errors retain their own error types. The downloader
+does not retry, select an older archive or switch transports automatically.
 
 Installation checks the archive again, rejects paths outside the target,
 backslashes/control characters, duplicates, all links and special members, sparse
@@ -121,6 +136,7 @@ const result = await downloadRuntimeArtifact({
   manifestPath: 'runtime-artifacts.lock.json', version: '0.1.0-preview.2',
   component: 'runtime', platform: 'ios', arch: 'arm64-device', abiVersion: 1,
   outDirectory: '.runtime/downloads', installDirectory: '.runtime/native/aarch64-apple-ios',
+  timeoutMs: 900000, // optional; explicit value overrides the environment
   // artifactDirectory: '/authorized/offline-archives',
 });
 // result.path, result.receiptPath, result.receipt, result.installDirectory
@@ -135,5 +151,7 @@ node --test test/*.test.mjs
 Tests use local temporary files and injected HTTP responses; they require no
 GitHub credentials, actual runtime binary or network. They verify byte pins,
 redirect credential boundaries, rejection/cleanup, strict tar installation and
-fixture determinism. These are tooling tests, not native SDK, GPU, simulator,
+fixture determinism. Mocked fetches and clocks cover metadata/artifact deadlines,
+redirect budgets, partial body failures, cleanup and timeout configuration bounds.
+These are tooling tests, not native SDK, GPU, simulator,
 physical-device or WeChat compatibility acceptance.

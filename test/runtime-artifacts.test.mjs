@@ -7,7 +7,8 @@ import { createHash } from 'node:crypto';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { fileURLToPath } from 'node:url';
-import { downloadRuntimeArtifact, selectArtifact, SDK_VERSION } from '../tools/runtime-artifacts.mjs';
+import { DEFAULT_ARTIFACT_TIMEOUT_MS, MAX_ARTIFACT_TIMEOUT_MS, METADATA_TIMEOUT_MS,
+  downloadRuntimeArtifact, selectArtifact, SDK_VERSION } from '../tools/runtime-artifacts.mjs';
 const run = promisify(execFile);
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileName = 'runtime-0.1.0-preview.2-linux-x86_64.tar.gz';
@@ -34,6 +35,19 @@ with tarfile.open(sys.argv[1],'w:gz',format=tarfile.PAX_FORMAT) as archive:
    info.linkname=item.get('linkname','../../../escape'); archive.addfile(info)
 `, path, JSON.stringify(members)]);
   return readFile(path);
+}
+
+const releaseMetadata = c => ({ tag_name: `runtime-v${SDK_VERSION}`, draft: false,
+  assets: [{ id: 17, state: 'uploaded', name: fileName, size: c.bytes.length, digest: `sha256:${hash(c.bytes)}` }] });
+function timeoutEnvironment(t, value) {
+  const previous = process.env.WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS;
+  if (value === undefined) delete process.env.WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS;
+  else process.env.WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS = value;
+  t.after(() => { if (previous === undefined) delete process.env.WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS;
+    else process.env.WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS = previous; });
+}
+function stalledBody(ready, cancelled = () => {}) {
+  return new ReadableStream({ pull() { ready.resolve(); return new Promise(() => {}); }, cancel: cancelled }, { highWaterMark: 0 });
 }
 
 test('manifest pins exact version, ABI, component and target without fallback', () => {
@@ -104,6 +118,156 @@ test('foreign repository or HTTP redirect is rejected before forwarding credenti
 test('network failures never include the token or raw remote error text', async t => {
   const c = await context(t); const token = 'cannot-appear-in-output';
   await assert.rejects(downloadRuntimeArtifact({ ...c.options, token, fetchImpl() { throw new Error(token); } }), error => error.code === 'ERR_RUNTIME_NETWORK' && !error.message.includes(token));
+});
+
+test('timeouts reject invalid API and environment bounds before any cache or network work', async t => {
+  const c = await context(t); timeoutEnvironment(t, undefined);
+  const options = { ...c.options, token: 'secret', fetchImpl() { assert.fail('Invalid options cannot request a release'); } };
+  for (const timeoutMs of [0, -1, 1.5, NaN, Infinity, MAX_ARTIFACT_TIMEOUT_MS + 1, Number.MAX_SAFE_INTEGER, '900000', null, {}, true]) {
+    await assert.rejects(downloadRuntimeArtifact({ ...options, timeoutMs }), { code: 'ERR_RUNTIME_OPTIONS' });
+  }
+  for (const value of ['', '0', '-1', '1.5', 'NaN', '1e3', ' 1000', String(MAX_ARTIFACT_TIMEOUT_MS + 1)]) {
+    process.env.WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS = value;
+    await assert.rejects(downloadRuntimeArtifact(options), { code: 'ERR_RUNTIME_OPTIONS' });
+  }
+  assert.ok(!(await readdir(c.root)).includes('cache'));
+  // Explicit settings override even an invalid environment, including offline/cache calls.
+  await downloadRuntimeArtifact({ ...options, timeoutMs: 1, artifactDirectory: c.offline });
+  await downloadRuntimeArtifact({ ...options, timeoutMs: MAX_ARTIFACT_TIMEOUT_MS, artifactDirectory: c.offline });
+});
+
+test('metadata has its own 30 second deadline even if fetch ignores abort', async t => {
+  const c = await context(t), ready = Promise.withResolvers(); timeoutEnvironment(t, undefined);
+  t.mock.timers.enable({ apis: ['setTimeout'] }); let signal, calls = 0;
+  const operation = downloadRuntimeArtifact({ ...c.options, timeoutMs: MAX_ARTIFACT_TIMEOUT_MS, token: 'secret',
+    fetchImpl(_url, options) { calls++; signal = options.signal; ready.resolve(); return new Promise(() => {}); } });
+  const rejected = assert.rejects(operation, { code: 'ERR_RUNTIME_NETWORK' }); await ready.promise;
+  t.mock.timers.tick(METADATA_TIMEOUT_MS - 1); assert.equal(signal.aborted, false);
+  t.mock.timers.tick(1); await rejected; assert.equal(signal.aborted, true); assert.equal(calls, 1);
+  assert.deepEqual(await readdir(c.options.outDirectory), []);
+});
+
+test('default artifact body deadline allows more than 120 seconds and cleans stalled partial files', async t => {
+  const c = await context(t), ready = Promise.withResolvers(); timeoutEnvironment(t, undefined);
+  t.mock.timers.enable({ apis: ['setTimeout'] }); let signal, cancelled = false;
+  const operation = downloadRuntimeArtifact({ ...c.options, token: 'secret', fetchImpl: async (url, options) => {
+    if (String(url).includes('/tags/')) return Response.json(releaseMetadata(c));
+    signal = options.signal; return new Response(stalledBody(ready, () => { cancelled = true; }));
+  } });
+  const rejected = assert.rejects(operation, { code: 'ERR_RUNTIME_NETWORK' }); await ready.promise;
+  assert.equal(DEFAULT_ARTIFACT_TIMEOUT_MS, 900_000);
+  t.mock.timers.tick(120_001); assert.equal(signal.aborted, false);
+  t.mock.timers.tick(DEFAULT_ARTIFACT_TIMEOUT_MS - 120_001); await rejected;
+  assert.equal(signal.aborted, true); assert.equal(cancelled, true);
+  assert.deepEqual(await readdir(c.options.outDirectory), []);
+});
+
+test('one configured artifact deadline covers redirects and body without a fresh budget', async t => {
+  const c = await context(t), ready = Promise.withResolvers(); timeoutEnvironment(t, undefined);
+  t.mock.timers.enable({ apis: ['setTimeout'] }); const signals = [];
+  const operation = downloadRuntimeArtifact({ ...c.options, timeoutMs: 500, token: 'secret', fetchImpl: async (url, options) => {
+    if (String(url).includes('/tags/')) return Response.json(releaseMetadata(c));
+    signals.push(options.signal);
+    if (url.hostname === 'api.github.com') {
+      t.mock.timers.tick(350); return new Response(null, { status: 302, headers: { location: 'https://release-assets.githubusercontent.com/asset' } });
+    }
+    return new Response(stalledBody(ready));
+  } });
+  const rejected = assert.rejects(operation, { code: 'ERR_RUNTIME_NETWORK' }); await ready.promise;
+  assert.equal(signals.length, 2); assert.equal(signals[0], signals[1]);
+  t.mock.timers.tick(149); assert.equal(signals[0].aborted, false);
+  t.mock.timers.tick(1); await rejected; assert.deepEqual(await readdir(c.options.outDirectory), []);
+});
+
+test('environment timeout configures unchanged wrapper API calls', async t => {
+  const c = await context(t), ready = Promise.withResolvers(); timeoutEnvironment(t, '250');
+  t.mock.timers.enable({ apis: ['setTimeout'] }); let signal;
+  const operation = downloadRuntimeArtifact({ ...c.options, token: 'secret', fetchImpl: async (url, options) => {
+    if (String(url).includes('/tags/')) return Response.json(releaseMetadata(c));
+    signal = options.signal; return new Response(stalledBody(ready));
+  } });
+  const rejected = assert.rejects(operation, { code: 'ERR_RUNTIME_NETWORK' }); await ready.promise;
+  t.mock.timers.tick(249); assert.equal(signal.aborted, false);
+  t.mock.timers.tick(1); await rejected;
+});
+
+test('a timeout after body progress removes partial bytes and preserves an existing installation', async t => {
+  const c = await context(t, await tarBytes(t)), ready = Promise.withResolvers(); timeoutEnvironment(t, undefined);
+  const installation = join(c.root, 'installed'); await mkdir(installation); await writeFile(join(installation, 'preserve'), 'existing installation');
+  t.mock.timers.enable({ apis: ['setTimeout'] }); let reads = 0;
+  const prefix = c.bytes.subarray(0, Math.floor(c.bytes.length / 2));
+  const operation = downloadRuntimeArtifact({ ...c.options, installDirectory: installation, timeoutMs: 500, token: 'secret', fetchImpl: async url => {
+    if (String(url).includes('/tags/')) return Response.json(releaseMetadata(c));
+    return new Response(new ReadableStream({ pull(controller) {
+      if (reads++ === 0) { controller.enqueue(prefix); return; }
+      ready.resolve(); return new Promise(() => {});
+    } }, { highWaterMark: 0 }));
+  } });
+  const rejected = assert.rejects(operation, { code: 'ERR_RUNTIME_NETWORK' }); await ready.promise;
+  const partial = (await readdir(c.options.outDirectory)).find(name => name.endsWith('.part')); assert.ok(partial);
+  assert.deepEqual(await readFile(join(c.options.outDirectory, partial)), prefix);
+  t.mock.timers.tick(500); await rejected;
+  assert.deepEqual(await readdir(c.options.outDirectory), []);
+  assert.deepEqual(await readdir(installation), ['preserve']);
+  assert.equal(await readFile(join(installation, 'preserve'), 'utf8'), 'existing installation');
+});
+
+test('responses arriving after a header timeout are disposed instead of retained', async t => {
+  const c = await context(t), started = Promise.withResolvers(), response = Promise.withResolvers(); timeoutEnvironment(t, undefined);
+  t.mock.timers.enable({ apis: ['setTimeout'] }); let cancelled = false;
+  const operation = downloadRuntimeArtifact({ ...c.options, token: 'secret', fetchImpl() { started.resolve(); return response.promise; } });
+  const rejected = assert.rejects(operation, { code: 'ERR_RUNTIME_NETWORK' }); await started.promise;
+  t.mock.timers.tick(METADATA_TIMEOUT_MS); await rejected;
+  response.resolve(new Response(new ReadableStream({ cancel() { cancelled = true; } })));
+  await Promise.resolve(); await Promise.resolve();
+  assert.equal(cancelled, true); assert.deepEqual(await readdir(c.options.outDirectory), []);
+});
+
+test('metadata and artifact body failures have stable errors without remote text or credentials', async t => {
+  const token = 'cannot-appear-in-body-error';
+  for (const phase of ['metadata', 'artifact']) {
+    const c = await context(t); let calls = 0;
+    const fetchImpl = async url => {
+      calls++;
+      if (phase === 'artifact' && String(url).includes('/tags/')) return Response.json(releaseMetadata(c));
+      return new Response(new ReadableStream({ start(controller) { controller.error(new Error(`${token} https://signed.example/private`)); } }));
+    };
+    await assert.rejects(downloadRuntimeArtifact({ ...c.options, token, fetchImpl }),
+      error => error.code === 'ERR_RUNTIME_NETWORK' && !error.message.includes(token) && !error.message.includes('signed.example'));
+    assert.equal(calls, phase === 'metadata' ? 1 : 2); assert.deepEqual(await readdir(c.options.outDirectory), []);
+  }
+});
+
+test('local write failures retain their IO error and dispose the unused network body', async t => {
+  const c = await context(t); let cancelled = false;
+  const fetchImpl = async url => {
+    if (String(url).includes('/tags/')) return Response.json(releaseMetadata(c));
+    await rm(c.options.outDirectory, { recursive: true });
+    return new Response(new ReadableStream({ cancel() { cancelled = true; } }));
+  };
+  await assert.rejects(downloadRuntimeArtifact({ ...c.options, token: 'secret', fetchImpl }), { code: 'ENOENT' });
+  assert.equal(cancelled, true);
+});
+
+test('completed transfers clear both deadline timers', async t => {
+  const c = await context(t); timeoutEnvironment(t, undefined); t.mock.timers.enable({ apis: ['setTimeout'] }); const signals = [];
+  const result = await downloadRuntimeArtifact({ ...c.options, token: 'secret', fetchImpl: async (url, options) => {
+    signals.push(options.signal); return String(url).includes('/tags/') ? Response.json(releaseMetadata(c)) : new Response(c.bytes);
+  } });
+  t.mock.timers.tick(MAX_ARTIFACT_TIMEOUT_MS + METADATA_TIMEOUT_MS);
+  assert.ok(signals.every(signal => !signal.aborted)); assert.deepEqual(await readFile(result.path), c.bytes);
+});
+
+test('CLI timeout validates decimal bounds and overrides the environment for offline installation', async t => {
+  const c = await context(t), script = fileURLToPath(new URL('../tools/runtime-artifacts.mjs', import.meta.url));
+  const argv = [script, '--manifest', c.manifestPath, '--platform', 'linux', '--arch', 'x86_64', '--out-dir', c.options.outDirectory, '--artifact-dir', c.offline];
+  const env = { ...process.env, WEAPP_CONTAINER_RUNTIME_TIMEOUT_MS: 'invalid', WEAPP_CONTAINER_RUNTIME_ARTIFACT_DIR: '' };
+  for (const timeout of ['0', '1.5', '1e3', String(MAX_ARTIFACT_TIMEOUT_MS + 1)]) {
+    await assert.rejects(run(process.execPath, [...argv, '--timeout-ms', timeout], { env }),
+      error => error.stderr.includes('ERR_RUNTIME_OPTIONS') && !error.stderr.includes('Bearer'));
+  }
+  const result = await run(process.execPath, [...argv, '--timeout-ms', '900000'], { env });
+  assert.equal(JSON.parse(result.stdout).receipt.source, 'offline');
 });
 
 test('release size mismatch and truncated stream cannot publish an artifact', async t => {

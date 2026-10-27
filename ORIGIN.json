@@ -70,7 +70,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "87420aa403522647c92de4acf203b7b7cadea8b4158c211015a007b98455a4d4",
+      "sha256": "77f22e3b07a49e391277029c8dbec82944c1c63034b91cc664340615f8fb87e8",
       "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
     },
     {
@@ -90,12 +90,12 @@
     },
     {
       "path": "test/runtime-artifacts.test.mjs",
-      "sha256": "b9838a19228a535a2f993fb0b38ec7cf4aaf33c94839fee6f73fbc3bd43c8a58",
+      "sha256": "b25d6aabb8ca0b59cae2f4fdd7fae88a6d6ef7f8ef6f351f245f583c800cb2a9",
       "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
     },
     {
       "path": "tools/runtime-artifacts.mjs",
-      "sha256": "a00382730316f1105e685ebefbe61e0533b8da1280c548f6eb58e77f71f4a3e8",
+      "sha256": "25cf17edc7ebd6349abaa08151d73f91767e2dc2b74702e84f031663149df2f0",
       "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
     },
     {
