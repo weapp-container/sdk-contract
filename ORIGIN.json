@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "sourceRepository": "sonofmagic/weapp-container",
+  "sourceCommit": "63c003e328ecee3e91ffe1185462a7f63ea96f0b",
+  "sdkVersion": "0.1.0-preview.2",
+  "extraction": "Fresh allowlisted source export; no monorepo history, runtime implementation or binaries.",
+  "files": [
+    {
+      "sourcePath": "sdk/include/weapp_container_sdk.h",
+      "destinationPath": "include/weapp_container_sdk.h",
+      "sourceSha256": "2a4761c0650c72ccd8d0a791fb66ee48888e1ce182ba99f0c92673a2c44a8e9b",
+      "extractedSha256": "2a4761c0650c72ccd8d0a791fb66ee48888e1ce182ba99f0c92673a2c44a8e9b",
+      "transformations": []
+    },
+    {
+      "sourcePath": "sdk/types/weapp-container.d.ts",
+      "destinationPath": "types/weapp-container.d.ts",
+      "sourceSha256": "3a5bedab2f7b32d23aaf0e36a33cf675d8111b87948f9d1a5cf9ee765caa8b9a",
+      "extractedSha256": "3a5bedab2f7b32d23aaf0e36a33cf675d8111b87948f9d1a5cf9ee765caa8b9a",
+      "transformations": []
+    },
+    {
+      "sourcePath": "sdk/CONTRACT.md",
+      "destinationPath": "CONTRACT.md",
+      "sourceSha256": "be8e15cde918c30569640b60c4cff9fe29f2c9bc1054fcb4d516882b15019402",
+      "extractedSha256": "8196aa203908de36d50ff7adf002ea07752a52c0b3a1723fb1f090f6a20d2af9",
+      "transformations": [
+        "Version and standalone public contract paths; runtime implementation remains separate."
+      ]
+    },
+    {
+      "sourcePath": "sdk/FLUTTER_PROTOCOL.md",
+      "destinationPath": "FLUTTER_PROTOCOL.md",
+      "sourceSha256": "634564fc2009faede7c1c17040749003bf2c1f8d6de423ffc94c14ae19f56809",
+      "extractedSha256": "634564fc2009faede7c1c17040749003bf2c1f8d6de423ffc94c14ae19f56809",
+      "transformations": []
+    },
+    {
+      "sourcePath": "sdk/platforms.json",
+      "destinationPath": "platforms.json",
+      "sourceSha256": "36ddbaea048724f8be395bf30ca6578c0e70c2b6ac638f0c59ad77e8a4590fd1",
+      "extractedSha256": "704110ccd3ea18c025b3dfccd842f00f874034cdf89fa079595bedabea432336",
+      "transformations": [
+        "SDK version increment; requested platform list does not grant validation."
+      ]
+    },
+    {
+      "sourcePath": "sdk/LICENSE",
+      "destinationPath": "LICENSE",
+      "sourceSha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "extractedSha256": "a60eea817514531668d7e00765731449fe14d059d3249e0bc93b36de45f759f2",
+      "transformations": []
+    },
+    {
+      "sourcePath": "examples/sdk/shared/make-fixture.mjs",
+      "destinationPath": "fixtures/make-acceptance-pack.mjs",
+      "sourceSha256": "01e2b37104f108fbb99fd57b907f450201200e546a0b8fac31c13e423be49c9d",
+      "extractedSha256": "e8f5c580b9aa228b8b3c8f0f11ddec03f79b427ab21ad0a7af068744ce39d7f0",
+      "transformations": [
+        "Pure standalone authored portable fixture generator; removed private base-pack copy; no compiler/runtime implementation or official bytes. Legacy first function argument retained but never read. Compiler commit explicitly disclaims upstream build provenance.",
+        "Declare only the seven API dependencies exercised by the standalone fixture; capability-gated module/lifecycle/input calls retain their original semantics."
+      ]
+    }
+  ],
+  "generatedFiles": [
+    {
+      "path": ".gitignore",
+      "sha256": "005da94800a119d9c776ebbb05e6fb5328167ecb7385ede00401b372cdd5b011",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "README.md",
+      "sha256": "496b30fdd6a7d7d2715bf47d83f48465d22f705b73142b737a2d5b12d24d5f92",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "package.json",
+      "sha256": "98a1d7281b28dc69a2053a5e8d974a647af072a9d636e19849f71fe607c71ab1",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "runtime-artifacts.schema.json",
+      "sha256": "bb973a178179000b4e78227224c69d163f7f7456a98f69c8ce2c08b4ba46135e",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "test/fixture.test.mjs",
+      "sha256": "a4e287c130192969f7d1d9f65500830376ca0e95f0b0587921cd454469740102",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "test/runtime-artifacts.test.mjs",
+      "sha256": "b9838a19228a535a2f993fb0b38ec7cf4aaf33c94839fee6f73fbc3bd43c8a58",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "tools/runtime-artifacts.mjs",
+      "sha256": "a00382730316f1105e685ebefbe61e0533b8da1280c548f6eb58e77f71f4a3e8",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "tools/unpack-runtime.py",
+      "sha256": "d4f49e8aa2541ca01670a4fd10330e6bc4b470cf95452b0585605bae09f76f89",
+      "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    }
+  ],
+  "licensingBoundary": "Apache-2.0 applies to this exported contract/tooling source only. Separate runtime binaries and third-party components retain their own licenses."
+}
