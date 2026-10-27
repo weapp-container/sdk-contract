@@ -70,7 +70,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "496b30fdd6a7d7d2715bf47d83f48465d22f705b73142b737a2d5b12d24d5f92",
+      "sha256": "87420aa403522647c92de4acf203b7b7cadea8b4158c211015a007b98455a4d4",
       "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
     },
     {
@@ -102,6 +102,11 @@
       "path": "tools/unpack-runtime.py",
       "sha256": "d4f49e8aa2541ca01670a4fd10330e6bc4b470cf95452b0585605bae09f76f89",
       "origin": "Authored standalone SDK contract tooling/documentation/tests; no private runtime source."
+    },
+    {
+      "path": "runtime-artifacts.lock.json",
+      "origin": "Reviewed exact preview.2 runtime distribution pins; binary bytes remain separate and proprietary.",
+      "sha256": "c574d527f87160a2b28ff416dfb0f9da43e16c2989de2b83880b71e1874f3f0b"
     }
   ],
   "licensingBoundary": "Apache-2.0 applies to this exported contract/tooling source only. Separate runtime binaries and third-party components retain their own licenses."

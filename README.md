@@ -40,33 +40,17 @@ Node 24 and, for installation, Python 3 are required. The downloader has no npm
 dependencies. Keep a reviewed JSON pin file in each SDK; it follows
 `runtime-artifacts.schema.json`:
 
-```json
-{
-  "schemaVersion": 1,
-  "runtimeVersion": "0.1.0-preview.2",
-  "abiVersion": 1,
-  "source": {
-    "repository": "weapp-container/runtime-artifacts",
-    "releaseTag": "runtime-v0.1.0-preview.2"
-  },
-  "artifacts": [
-    {
-      "component": "runtime",
-      "platform": "ios",
-      "arch": "arm64-device",
-      "fileName": "runtime-0.1.0-preview.2-ios-arm64-device.tar.gz",
-      "size": 123,
-      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
-    }
-  ]
-}
-```
-
-The size/hash above are illustrative and cannot authorize an actual binary.
-Populate them from the reviewed archive. A pin identifies the exact version,
-ABI, component, platform, architecture, byte size and SHA-256. Unknown fields,
-duplicated targets/names and any mismatched request fail. There is no `latest`,
-older-library search, engine fallback or download from another repository.
+The committed `runtime-artifacts.lock.json` pins the reviewed preview.2 release:
+seven QuickJS + Skia runtime slices and the Android, iOS and macOS universal SDK
+installations. Its SHA-256 is
+`c574d527f87160a2b28ff416dfb0f9da43e16c2989de2b83880b71e1874f3f0b`.
+The release tag is `runtime-v0.1.0-preview.2` in the private
+`weapp-container/runtime-artifacts` repository. The raw native source commit is
+`03ff7fb85c2c91665f8c7f7b1e8f476f63596b01`; archive provenance also identifies
+wrapper commits separately. A pin identifies exact version, ABI, component,
+platform, architecture, byte size and SHA-256. Unknown fields, duplicated
+targets/names and mismatched requests fail. There is no `latest`, older-library
+search, engine fallback or download from another repository.
 
 `component` is `runtime`, `android-sdk`, `ios-sdk` or `desktop-sdk`. Single-slice
 architectures follow `platforms.json`. Multi-slice Android/iOS/macOS archives use
@@ -75,7 +59,10 @@ Windows/Linux use `x86_64`. A failed Windows build remains blocked; a pin cannot
 create execution evidence.
 
 A runtime archive contains a single target's installation files directly:
-`build.json`, its library, public header, `RUNTIME-LICENSE` and `licenses/`.
+`build.json`, its selected library, public header, `RUNTIME-LICENSE` and `licenses/`.
+`runtime-distribution.json` records the retained original build receipt hash and
+selected/omitted file partition. Public headers retain Apache-2.0 independently
+of the runtime binary license. Unused build intermediates are not distributed.
 Install that archive into `<native-root>/<target-triple>`. Complete SDK archives
 also start directly at their installation root: Android contains `maven/`,
 `licenses/` and `validation.json`; iOS contains `Package.swift`, `Sources/`,
