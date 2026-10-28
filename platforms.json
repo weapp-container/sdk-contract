@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "version": "0.1.0-preview.2",
+  "version": "0.1.0-preview.3",
   "engine": "quickjs",
   "targets": [
     { "platform": "android", "minimum": "26", "architectures": ["arm64-v8a", "x86_64"], "renderer": "skia-gles" },
     { "platform": "ios", "minimum": "16.0", "architectures": ["arm64-device", "arm64-simulator", "x86_64-simulator"], "renderer": "skia-metal" },
     { "platform": "macos", "minimum": "12.0", "architectures": ["arm64", "x86_64"], "renderer": "skia-metal" },
-    { "platform": "windows", "minimum": "10", "architectures": ["x86_64"], "renderer": "skia-raster" },
-    { "platform": "linux", "minimum": "Ubuntu 22.04 / glibc 2.35 / GTK 3.24", "architectures": ["x86_64"], "renderer": "skia-raster" }
+    { "platform": "windows", "minimum": "10", "architectures": ["x86_64"], "renderer": "skia-opengl-3.3" },
+    { "platform": "linux", "minimum": "Ubuntu 22.04 / glibc 2.35 / GTK 3.24", "architectures": ["x86_64"], "renderer": "skia-opengl-3.3" }
   ],
   "frameworks": {
     "flutter": { "platforms": ["android", "ios", "macos", "windows", "linux"], "channel": "stable", "version": "3.47.7", "commit": "abaf9c523780a608bd46686fd5e53740a07077f8" },

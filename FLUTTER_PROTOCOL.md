@@ -1,4 +1,4 @@
-# Flutter plugin transport, preview 1
+# Flutter plugin transport, preview.3
 
 This is an internal contract shared by the five federated implementations.
 Application code uses the typed Dart controller, widget, events and host calls.
@@ -42,9 +42,12 @@ no value return `null`. All methods except `initialize` and `create` require `id
 | Method | Arguments beyond `id` | Result |
 | --- | --- | --- |
 | `initialize` | `clientEpoch` | `null` after retiring the previous epoch |
-| `create` | `storageKey` (string; null explicitly selects memory), optional `sessionId` | `{id}` |
+| `create` | `storageKey` (string; null explicitly selects memory), optional `sessionId`, `gpuRequired`, `devDiagnostics` | `{id}` |
 | `registerHostMethod` | `name` | `null`; before first load |
 | `load` | `packPath`, optional `route`, `options` (map) | `null` after candidate activation |
+| `applyDevPack` | `packPath`, optional `route`, `options` (map) | `{reloadKind,state}` after acceptance; actual presentation is separate |
+| `devState` | none | read-only `{state,pages:[{id,route,data}]}` |
+| `clearDevStorage` | none | `null` after cleared wx storage is durably flushed |
 | `navigate` | `route`, `query` (map), `replace` (bool) | `null` |
 | `back` | none | `null` |
 | `sendMessage` | `message` (JSON value) | `null` |
