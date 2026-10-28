@@ -35,11 +35,11 @@ compiler name `weapp-vite`; the fixture's commit explicitly says
 not actual upstream compiler output, official parity or platform execution evidence.
 No private implementation or official private resource is included.
 
-The current source targets preview.3. The preview.2 lock and its historical
-SHA-256 and reports below are preserved, and are not preview.3 delivery evidence.
-Tools now default to preview.3 and reject the old lock unless an explicit
-historical version is requested. New pins require real built and verified archive
-bytes; placeholders and fallback are forbidden.
+The current source and default lock target the real private preview.3 release.
+Its ten runtime/SDK archives are content-pinned; Windows/Linux pins are unavailable
+and fail explicitly. Preview.2 releases and historical reports below retain their
+original identity and do not establish preview.3 execution or device acceptance.
+`ORIGIN.json` preserves the initial extraction and records subsequent SDK changes.
 
 ## Pin runtime distributions
 
