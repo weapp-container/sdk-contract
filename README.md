@@ -1,6 +1,6 @@
 # Weapp Container SDK contracts
 
-Source version `0.1.0-preview.5` (unpublished), C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.5` (private preview), C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
@@ -37,12 +37,14 @@ compiler name `weapp-vite`; the fixture's commit explicitly says
 not actual upstream compiler output, official parity or platform execution evidence.
 No private implementation or official private resource is included.
 
-The source develops preview.5; the retained default lock still identifies the
-real private preview.4 release. New preview.5 defaults cannot consume those old
-pins as a fallback. New locks require separately built, reviewed binary hashes.
-Windows/Linux pins are unavailable and fail explicitly. Previous releases and
-historical reports retain their original identity and do not establish preview.5
-execution or device acceptance.
+The default lock identifies the newly built **0.1.0-preview.5** QuickJS + Skia GPU
+artifacts by exact size and SHA-256. It contains seven runtime slices and Android,
+iOS and macOS universal SDK packages; native production is bound to
+`05aec6c4056a124a9c399c75b34d081cffbdaa5d`, while wrapper producer commits are
+recorded separately in archive provenance. Historical preview.2/3/4 releases,
+reports and source identities remain unchanged. No older-runtime fallback is
+allowed. Windows/Linux runtime distributions remain blocked. Archive validation,
+private publication and actual Player/GPU/device acceptance are separate gates.
 `ORIGIN.json` preserves the initial extraction and records subsequent SDK changes.
 
 ## Pin runtime distributions
@@ -51,13 +53,12 @@ Node 24 and, for installation, Python 3 are required. The downloader has no npm
 dependencies. Keep a reviewed JSON pin file in each SDK; it follows
 `runtime-artifacts.schema.json`:
 
-The committed `runtime-artifacts.lock.json` pins the reviewed preview.2 release:
-seven QuickJS + Skia runtime slices and the Android, iOS and macOS universal SDK
-installations. Its SHA-256 is
-`c574d527f87160a2b28ff416dfb0f9da43e16c2989de2b83880b71e1874f3f0b`.
-The release tag is `runtime-v0.1.0-preview.2` in the private
-`weapp-container/runtime-artifacts` repository. The raw native source commit is
-`03ff7fb85c2c91665f8c7f7b1e8f476f63596b01`; archive provenance also identifies
+The committed `runtime-artifacts.lock.json` pins preview.5: seven QuickJS + Skia
+runtime slices and Android, iOS and macOS universal SDK installations. Its
+SHA-256 is `413ecc39ee09f19a807720716e8d8b0657eddeb4bc40e6bfd473b9527e81323d`. The release tag is
+`runtime-v0.1.0-preview.5` in the private `weapp-container/runtime-artifacts`
+repository. Native production is bound to
+`05aec6c4056a124a9c399c75b34d081cffbdaa5d`; archive provenance identifies
 wrapper commits separately. A pin identifies exact version, ABI, component,
 platform, architecture, byte size and SHA-256. Unknown fields, duplicated
 targets/names and mismatched requests fail. There is no `latest`, older-library
@@ -89,7 +90,7 @@ Then select an exact pin:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.2 \
+  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios \
   --timeout-ms 900000
@@ -99,7 +100,7 @@ Without credentials, provide a directory containing the exact pinned archive:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.2 \
+  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --artifact-dir /authorized/offline-archives \
   --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios
