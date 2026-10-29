@@ -5,7 +5,7 @@ header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
 
-The current source is the `0.1.0-preview.5.1` patch. Native preparation requires an independently reviewed matching `0.1.0-preview.5.1` artifact lock; a source version bump cannot reuse or relabel older binaries. The checked-in historical lock and producer identities below remain unchanged until new artifacts are built and pinned. Missing matching artifacts fail explicitly.
+The current source and exact runtime lock target `0.1.0-preview.5.1`. The lock SHA-256 is `bc2bf8a79ebb1ea1b7bcf2b5a4749271f2022c9b103773bd7be6ebc3b94271cd`; it pins ten independently produced archives. Native preparation checks the matching version and exact artifact bytes; it cannot reuse or relabel an older binary. The lock does not assert private-release availability, Player installation or GPU/device acceptance.
 
 The Apache-2.0 license applies to this repository's contracts, wrappers/tooling
 and authored example code. It does **not** license the separate runtime binaries.
@@ -39,14 +39,18 @@ compiler name `weapp-vite`; the fixture's commit explicitly says
 not actual upstream compiler output, official parity or platform execution evidence.
 No private implementation or official private resource is included.
 
-The default lock identifies the newly built **0.1.0-preview.5** QuickJS + Skia GPU
-artifacts by exact size and SHA-256. It contains seven runtime slices and Android,
-iOS and macOS universal SDK packages; native production is bound to
-`05aec6c4056a124a9c399c75b34d081cffbdaa5d`, while wrapper producer commits are
-recorded separately in archive provenance. Historical preview.2/3/4 releases,
-reports and source identities remain unchanged. No older-runtime fallback is
-allowed. Windows/Linux runtime distributions remain blocked. Archive validation,
-private publication and actual Player/GPU/device acceptance are separate gates.
+The default lock identifies the independently built **0.1.0-preview.5.1** QuickJS
++ Skia GPU artifacts by exact size and SHA-256: seven runtime slices and Android,
+iOS and macOS universal SDK packages. Native production is bound to
+`747d0b02131d7f67b3adbdd7127abcd5e21ffdbe`; wrapper producer commits remain
+separately recorded in archive provenance. Later pin-only commits do not change
+those producer identities. Windows/Linux runtime distributions remain blocked.
+Archive validation, private publication and actual Player/GPU/device acceptance
+are separate gates. No older-runtime fallback is allowed.
+
+Historical preview.5 native production remains bound to
+`05aec6c4056a124a9c399c75b34d081cffbdaa5d`. All earlier release bytes, reports
+and source identities keep their original bindings.
 `ORIGIN.json` preserves the initial extraction and records subsequent SDK changes.
 
 ## Pin runtime distributions
@@ -55,13 +59,15 @@ Node 24 and, for installation, Python 3 are required. The downloader has no npm
 dependencies. Keep a reviewed JSON pin file in each SDK; it follows
 `runtime-artifacts.schema.json`:
 
-The committed `runtime-artifacts.lock.json` pins preview.5: seven QuickJS + Skia
+The committed `runtime-artifacts.lock.json` pins preview.5.1: seven QuickJS + Skia
 runtime slices and Android, iOS and macOS universal SDK installations. Its
-SHA-256 is `413ecc39ee09f19a807720716e8d8b0657eddeb4bc40e6bfd473b9527e81323d`. The release tag is
-`runtime-v0.1.0-preview.5` in the private `weapp-container/runtime-artifacts`
+SHA-256 is `bc2bf8a79ebb1ea1b7bcf2b5a4749271f2022c9b103773bd7be6ebc3b94271cd`. The release tag is
+`runtime-v0.1.0-preview.5.1` in the private `weapp-container/runtime-artifacts`
 repository. Native production is bound to
-`05aec6c4056a124a9c399c75b34d081cffbdaa5d`; archive provenance identifies
-wrapper commits separately. A pin identifies exact version, ABI, component,
+`747d0b02131d7f67b3adbdd7127abcd5e21ffdbe`; archive provenance identifies
+wrapper commits separately. The historical preview.5 lock SHA-256 remains
+`413ecc39ee09f19a807720716e8d8b0657eddeb4bc40e6bfd473b9527e81323d` in its original
+commit and release; it is not attributed to this patch. A pin identifies exact version, ABI, component,
 platform, architecture, byte size and SHA-256. Unknown fields, duplicated
 targets/names and mismatched requests fail. There is no `latest`, older-library
 search, engine fallback or download from another repository.
@@ -174,4 +180,4 @@ The Dev Player declaration fixture also parses with Node 24 and, when an optiona
 TypeScript compiler is installed, checks correct assignments plus rejected numeric
 identities, incomplete layouts and missing acceptance CAS. Without TypeScript that
 semantic check is explicitly skipped; syntax/tooling checks still run. Neither
-check executes a runtime or upgrades the current artifact lock to preview.5.
+check executes a runtime or establishes publication/device acceptance for the current artifact lock.
