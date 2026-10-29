@@ -1,11 +1,11 @@
 # Weapp Container SDK contracts
 
-Source version `0.1.0-preview.5.1` (private preview), C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.5.2` (private preview), C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
 
-The current source and exact runtime lock target `0.1.0-preview.5.1`. The lock SHA-256 is `bc2bf8a79ebb1ea1b7bcf2b5a4749271f2022c9b103773bd7be6ebc3b94271cd`; it pins ten independently produced archives. Native preparation checks the matching version and exact artifact bytes; it cannot reuse or relabel an older binary. The lock does not assert private-release availability, Player installation or GPU/device acceptance.
+The current source and distribution lock target `0.1.0-preview.5.2`. The contained native runtime remains `0.1.0-preview.5.1`; this is a wrapper/distribution update, not a Rust rebuild. The lock SHA-256 is `10cf2f084601c9d0e2f06c54dcce4810527035beeee760f075b414651c67d829`; it pins ten independently produced archives. Native preparation checks the matching version and exact artifact bytes; it cannot reuse or relabel an older binary. The lock does not assert private-release availability, Player installation or GPU/device acceptance.
 
 The Apache-2.0 license applies to this repository's contracts, wrappers/tooling
 and authored example code. It does **not** license the separate runtime binaries.
@@ -39,12 +39,14 @@ compiler name `weapp-vite`; the fixture's commit explicitly says
 not actual upstream compiler output, official parity or platform execution evidence.
 No private implementation or official private resource is included.
 
-The default lock identifies the independently built **0.1.0-preview.5.1** QuickJS
+The default lock identifies the **0.1.0-preview.5.2** distribution of QuickJS
 + Skia GPU artifacts by exact size and SHA-256: seven runtime slices and Android,
 iOS and macOS universal SDK packages. Native production is bound to
 `747d0b02131d7f67b3adbdd7127abcd5e21ffdbe`; wrapper producer commits remain
-separately recorded in archive provenance. Later pin-only commits do not change
-those producer identities. Windows/Linux runtime distributions remain blocked.
+separately recorded in archive provenance. Android wrapper `preview.5.2` was built
+from `c8241b83017d7f5f7fd614dc34bd9fbf00230c0f`; iOS wrapper `preview.5.2`
+from `f8af959868b009b6b627c370c28983c410be7e9e`. The desktop SDK remains
+`preview.5.1`. Later pin-only commits do not change those producer identities. Windows/Linux runtime distributions remain blocked.
 Archive validation, private publication and actual Player/GPU/device acceptance
 are separate gates. No older-runtime fallback is allowed.
 
@@ -59,10 +61,10 @@ Node 24 and, for installation, Python 3 are required. The downloader has no npm
 dependencies. Keep a reviewed JSON pin file in each SDK; it follows
 `runtime-artifacts.schema.json`:
 
-The committed `runtime-artifacts.lock.json` pins preview.5.1: seven QuickJS + Skia
+The committed `runtime-artifacts.lock.json` pins preview.5.2: seven QuickJS + Skia
 runtime slices and Android, iOS and macOS universal SDK installations. Its
-SHA-256 is `bc2bf8a79ebb1ea1b7bcf2b5a4749271f2022c9b103773bd7be6ebc3b94271cd`. The release tag is
-`runtime-v0.1.0-preview.5.1` in the private `weapp-container/runtime-artifacts`
+SHA-256 is `10cf2f084601c9d0e2f06c54dcce4810527035beeee760f075b414651c67d829`. The release tag is
+`runtime-v0.1.0-preview.5.2` in the private `weapp-container/runtime-artifacts`
 repository. Native production is bound to
 `747d0b02131d7f67b3adbdd7127abcd5e21ffdbe`; archive provenance identifies
 wrapper commits separately. The historical preview.5 lock SHA-256 remains
@@ -98,7 +100,7 @@ Then select an exact pin:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.1 \
+  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.2 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios \
   --timeout-ms 900000
@@ -108,7 +110,7 @@ Without credentials, provide a directory containing the exact pinned archive:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.1 \
+  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.2 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --artifact-dir /authorized/offline-archives \
   --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios
@@ -153,7 +155,7 @@ checkout. The API is:
 ```js
 import { downloadRuntimeArtifact } from './runtime-artifacts.mjs';
 const result = await downloadRuntimeArtifact({
-  manifestPath: 'runtime-artifacts.lock.json', version: '0.1.0-preview.5.1',
+  manifestPath: 'runtime-artifacts.lock.json', version: '0.1.0-preview.5.2',
   component: 'runtime', platform: 'ios', arch: 'arm64-device', abiVersion: 1,
   outDirectory: '.runtime/downloads', installDirectory: '.runtime/native/aarch64-apple-ios',
   timeoutMs: 900000, // optional; explicit value overrides the environment

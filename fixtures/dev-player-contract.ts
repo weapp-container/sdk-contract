@@ -2,6 +2,7 @@ import type {
   AcceptedPackIdentity, ApplyDevPackAttempt, AtomicPresentationReceipt,
   DevPackAttemptObservationError, DevPackAttemptQuery, DevPackAttemptReceipt, DevPlayerCommandInputs, ExecutionHealth,
   HostLayout, HostLayoutObservation, HostSurfaceIdentity, NavigationLayoutRequest,
+  PreparedRestartMeasurementAttempt, PrepareHostLayoutRequest,
   ViewExecutionMetrics, ViewPreparationMetrics,
 } from '../types/weapp-container.js';
 
@@ -24,6 +25,21 @@ const layout: HostLayout = {
   },
 };
 const accepted: AcceptedPackIdentity = { root: 'a'.repeat(64), acceptedPackRevision: '4', sessionId: 'session:1' };
+const restartMeasurement: PreparedRestartMeasurementAttempt = {
+  schemaVersion: 1, ownerId: surface.ownerId, attemptId: '9007199254740999',
+  targetRoot: 'b'.repeat(64), expectedAccepted: accepted,
+};
+const preparedMeasurement: PrepareHostLayoutRequest = {
+  observation, chrome: layout.chrome, layoutRevision: '5',
+  coordinateSpace: 'flutterClient', restartAttempt: restartMeasurement,
+};
+// @ts-expect-error Measurement cannot drop its acceptance CAS.
+const noMeasurementCas: PreparedRestartMeasurementAttempt = { schemaVersion: 1, ownerId: '1', attemptId: '2', targetRoot: 'b'.repeat(64) };
+// @ts-expect-error A recovery claim never belongs in a committed core layout.
+const proofInCommit: HostLayout = { ...layout, restartAttempt: restartMeasurement };
+// @ts-expect-error Attempt identity cannot be rounded through a JSON Number.
+const numericMeasurement: PreparedRestartMeasurementAttempt = { ...restartMeasurement, attemptId: 9007199254740999 };
+void [preparedMeasurement, noMeasurementCas, proofInCommit, numericMeasurement];
 const begin: DevPlayerCommandInputs['beginDevPackAttempt'] = {
   operation: 'applyDevPack', packPath: '/verified/pack', expectedAccepted: accepted,
 };

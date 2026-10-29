@@ -75,6 +75,8 @@ export interface AtomicHostLayoutCapabilities {
   enabled: boolean;
   initialLayout: true;
   sdkObservationIdentity: true;
+  /** Native adapter measurement protocol; not granted by the core alone. */
+  preparedRestartMeasurement?: "1.0";
 }
 export interface HostLayoutConfig { protocolVersion: "1.0"; atomic: true; }
 export interface HostSurfaceIdentity { ownerId: DecimalU64; surfaceGeneration: DecimalU64; }
@@ -109,6 +111,22 @@ export interface AcceptedPackIdentity {
   root: string;
   acceptedPackRevision: DecimalU64;
   sessionId: string;
+}
+/** A claim checked against the live native journal, never client authority. */
+export interface PreparedRestartMeasurementAttempt {
+  schemaVersion: 1;
+  ownerId: DecimalU64;
+  attemptId: DecimalU64;
+  targetRoot: string;
+  expectedAccepted: AcceptedPackIdentity | null;
+}
+/** Flutter/native measurement adapter, separate from the core hostLayout command. */
+export interface PrepareHostLayoutRequest {
+  observation: HostLayoutObservation;
+  chrome: HostChromeGeometry;
+  layoutRevision: DecimalU64;
+  coordinateSpace: "flutterClient" | "screen";
+  restartAttempt?: PreparedRestartMeasurementAttempt;
 }
 export type DevReloadKind = "inPlace" | "restart";
 export type DevPackAttemptStatus = "prepared" | "applying" | "accepted" | "rejected" | "cancelled";

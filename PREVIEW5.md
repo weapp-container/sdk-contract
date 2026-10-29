@@ -51,6 +51,34 @@ pending measurement ownership before awaiting candidate work. Once accepted,
 layout owner bindings are rebound to the new runtime/page. Match native geometry
 and wait for the normal exact GPU presentation receipt before enabling input.
 
+### Prepared restart measurement (preview.5.2 adapters)
+
+Player additionally requires the native adapter capability
+`chrome.atomicLayout.preparedRestartMeasurement == "1.0"`. It is not implied by
+ABI 1 or by core atomic-layout support. Older adapters explicitly fail negotiation.
+
+Only the adapter's `prepareHostLayout` may carry `restartAttempt`:
+`{schemaVersion:1,ownerId,attemptId,targetRoot,expectedAccepted}`. IDs remain exact
+positive decimal strings; `expectedAccepted` must be explicitly present. The
+adapter passively queries its own native journal, requiring a still-`prepared`
+`load`/`applyDevPack` attempt classified as `restart`, with matching owner, target
+root and acceptance CAS. It rechecks receipt and current state before returning.
+`hostLayout` rejects this field, including null. This claim cannot commit layout,
+acknowledge a frame or enable input.
+
+A typed View-only fault may be measured for this verified restart while
+AppService and navigation remain healthy, no navigation is pending, and native
+input/presentation are disabled. Window metrics, actual native geometry,
+surface generation, observation and accepted session/page must still match.
+Ordinary navigation measurement keeps its existing health checks. Cancellation,
+replacement, an expired receipt or a different native owner invalidates the claim.
+The next accepted session still needs its own matching presentation receipt.
+
+Journal queries in the mobile wrappers are passive: no native allocation,
+event draining/replay, guest execution, renderer invalidation or presentation.
+Native library producer `0.1.0-preview.5.1` is retained unchanged in the new
+`0.1.0-preview.5.2` wrapper bundle; source and hashes identify each separately.
+
 ## Deferred navigation
 
 Atomic mode emits `{type:"navigationLayout",request}` and exposes the same
