@@ -1,6 +1,11 @@
 # SDK contract v1
 
-SDK version: `0.1.0-preview.4`; C ABI version: `1`.
+SDK source version: `0.1.0-preview.5` (unpublished); C ABI version: `1`.
+
+The [preview.5 source additions](PREVIEW5.md) define opt-in complete host layout,
+deferred navigation, execution health and queryable pack attempts. They retain
+ABI 1. That document is not a preview.5 binary publication or platform pass;
+existing pins/version remain unchanged until separately released.
 
 Platform adapters call the separately licensed runtime through `weapp_container_sdk.h`. Application
 code uses the platform's typed session and view API. The JSON below is an internal
@@ -11,9 +16,11 @@ adapter protocol; applications do not construct runtime bridge envelopes.
 Create and operate a session on one thread. Android uses a dedicated HandlerThread;
 Apple adapters use the main actor. Never invoke a session from a frame/texture
 callback on another thread. Deliver user events after the native command returns.
-Schedule the completion pump independently of display callbacks: a hidden view
-stops presentation and app timers, while HTTP, host completion, cancellation,
-timeouts and persistence continue when the OS allows execution.
+Schedule the completion pump independently of display callbacks. Application
+foreground lifecycle and preview occlusion are distinct: lifecycle hide stops
+presentation and app timers, while preview occlusion keeps business timers alive.
+HTTP, host completion, cancellation, timeouts and persistence continue when the
+OS allows execution.
 
 Each view attachment is exclusive. Detaching preserves the session. Stop rendering
 and detach the native GPU context before loading a replacement or closing. Reattach

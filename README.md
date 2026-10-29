@@ -1,6 +1,6 @@
 # Weapp Container SDK contracts
 
-Version `0.1.0-preview.4`, C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.5` (unpublished), C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
@@ -17,6 +17,8 @@ This repository is private initially. The tooling performs no public publishing.
 - `include/weapp_container_sdk_gl.h`: optional GL resolver extension; the GLES ABI header is unchanged.
 - `types/weapp-container.d.ts`: `weappContainer` business messaging and host methods.
 - `CONTRACT.md` and `FLUTTER_PROTOCOL.md`: adapter scheduling and transport behavior.
+- `PREVIEW5.md`: additive source protocols for atomic layout, deferred navigation,
+  independent execution health and accepted-pack attempt reconciliation; not a release notice.
 - `platforms.json`: requested platform matrix, not a list of passed environments.
 - `ORIGIN.json`: exact allowlisted source commit, source hashes and export transformations.
 
@@ -35,10 +37,12 @@ compiler name `weapp-vite`; the fixture's commit explicitly says
 not actual upstream compiler output, official parity or platform execution evidence.
 No private implementation or official private resource is included.
 
-The current source and default lock target the real private preview.4 release.
-Its ten runtime/SDK archives are content-pinned; Windows/Linux pins are unavailable
-and fail explicitly. Preview.2 releases and historical reports below retain their
-original identity and do not establish preview.4 execution or device acceptance.
+The source develops preview.5; the retained default lock still identifies the
+real private preview.4 release. New preview.5 defaults cannot consume those old
+pins as a fallback. New locks require separately built, reviewed binary hashes.
+Windows/Linux pins are unavailable and fail explicitly. Previous releases and
+historical reports retain their original identity and do not establish preview.5
+execution or device acceptance.
 `ORIGIN.json` preserves the initial extraction and records subsequent SDK changes.
 
 ## Pin runtime distributions
@@ -162,3 +166,9 @@ fixture determinism. Mocked fetches and clocks cover metadata/artifact deadlines
 redirect budgets, partial body failures, cleanup and timeout configuration bounds.
 These are tooling tests, not native SDK, GPU, simulator,
 physical-device or WeChat compatibility acceptance.
+
+The Dev Player declaration fixture also parses with Node 24 and, when an optional
+TypeScript compiler is installed, checks correct assignments plus rejected numeric
+identities, incomplete layouts and missing acceptance CAS. Without TypeScript that
+semantic check is explicitly skipped; syntax/tooling checks still run. Neither
+check executes a runtime or upgrades the current artifact lock to preview.5.

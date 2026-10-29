@@ -4,6 +4,12 @@ This is an internal contract shared by the five federated implementations.
 Application code uses the typed Dart controller, widget, events and host calls.
 No image bytes, Rust pointers or serialized bridge envelopes cross this channel.
 
+The [preview.5 source protocol](PREVIEW5.md) adds opt-in complete native layout,
+deferred navigation, typed health and queryable pack attempts over ABI 1. Native
+plugins must negotiate and forward the exact runtime identities and events; the
+declarations alone do not mean all five adapters have been executed or released.
+Old preview.4 binaries retain the methods described below.
+
 ## Engine and ownership
 
 - Method channel: `dev.weapp.container/methods`.
