@@ -1,6 +1,6 @@
 # Weapp Container SDK contracts
 
-Version `0.1.0-preview.3`, C ABI `1`. This repository contains the C embedding
+Version `0.1.0-preview.4`, C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
@@ -35,10 +35,10 @@ compiler name `weapp-vite`; the fixture's commit explicitly says
 not actual upstream compiler output, official parity or platform execution evidence.
 No private implementation or official private resource is included.
 
-The current source and default lock target the real private preview.3 release.
+The current source and default lock target the real private preview.4 release.
 Its ten runtime/SDK archives are content-pinned; Windows/Linux pins are unavailable
 and fail explicitly. Preview.2 releases and historical reports below retain their
-original identity and do not establish preview.3 execution or device acceptance.
+original identity and do not establish preview.4 execution or device acceptance.
 `ORIGIN.json` preserves the initial extraction and records subsequent SDK changes.
 
 ## Pin runtime distributions
