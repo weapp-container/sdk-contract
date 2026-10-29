@@ -1,9 +1,11 @@
 # Weapp Container SDK contracts
 
-Source version `0.1.0-preview.5` (private preview), C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.5.1` (private preview), C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
+
+The current source is the `0.1.0-preview.5.1` patch. Native preparation requires an independently reviewed matching `0.1.0-preview.5.1` artifact lock; a source version bump cannot reuse or relabel older binaries. The checked-in historical lock and producer identities below remain unchanged until new artifacts are built and pinned. Missing matching artifacts fail explicitly.
 
 The Apache-2.0 license applies to this repository's contracts, wrappers/tooling
 and authored example code. It does **not** license the separate runtime binaries.
@@ -90,7 +92,7 @@ Then select an exact pin:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5 \
+  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.1 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios \
   --timeout-ms 900000
@@ -100,7 +102,7 @@ Without credentials, provide a directory containing the exact pinned archive:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5 \
+  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.1 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --artifact-dir /authorized/offline-archives \
   --out-dir .runtime/downloads --install-dir .runtime/native/aarch64-apple-ios
@@ -145,7 +147,7 @@ checkout. The API is:
 ```js
 import { downloadRuntimeArtifact } from './runtime-artifacts.mjs';
 const result = await downloadRuntimeArtifact({
-  manifestPath: 'runtime-artifacts.lock.json', version: '0.1.0-preview.2',
+  manifestPath: 'runtime-artifacts.lock.json', version: '0.1.0-preview.5.1',
   component: 'runtime', platform: 'ios', arch: 'arm64-device', abiVersion: 1,
   outDirectory: '.runtime/downloads', installDirectory: '.runtime/native/aarch64-apple-ios',
   timeoutMs: 900000, // optional; explicit value overrides the environment

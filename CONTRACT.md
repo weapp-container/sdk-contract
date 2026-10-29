@@ -1,6 +1,6 @@
 # SDK contract v1
 
-SDK source version: `0.1.0-preview.5` (unpublished); C ABI version: `1`.
+SDK source version: `0.1.0-preview.5.1` (unpublished); C ABI version: `1`.
 
 The [preview.5 source additions](PREVIEW5.md) define opt-in complete host layout,
 deferred navigation, execution health and queryable pack attempts. They retain
