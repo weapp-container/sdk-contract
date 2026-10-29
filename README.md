@@ -1,11 +1,11 @@
 # Weapp Container SDK contracts
 
-Source version `0.1.0-preview.5.2` (private preview), C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.5.3` (private preview), C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
 
-The current source and distribution lock target `0.1.0-preview.5.2`. The contained native runtime remains `0.1.0-preview.5.1`; this is a wrapper/distribution update, not a Rust rebuild. The lock SHA-256 is `10cf2f084601c9d0e2f06c54dcce4810527035beeee760f075b414651c67d829`; it pins ten independently produced archives. Native preparation checks the matching version and exact artifact bytes; it cannot reuse or relabel an older binary. The lock does not assert private-release availability, Player installation or GPU/device acceptance.
+The current source requires a newly produced `0.1.0-preview.5.3` native runtime and SDK bundle. Its source includes the shared Skia layout-authority and native selector-owner corrections. The checked-in lock currently retains the original `0.1.0-preview.5.2` bytes (SHA-256 `10cf2f084601c9d0e2f06c54dcce4810527035beeee760f075b414651c67d829`) until the new archives are actually produced and independently verified. This is a pending distribution transition: the old lock cannot satisfy the new source version, and no old native binary may be relabeled. Publication, installation and device acceptance remain separate gates.
 
 The Apache-2.0 license applies to this repository's contracts, wrappers/tooling
 and authored example code. It does **not** license the separate runtime binaries.
@@ -183,3 +183,5 @@ TypeScript compiler is installed, checks correct assignments plus rejected numer
 identities, incomplete layouts and missing acceptance CAS. Without TypeScript that
 semantic check is explicitly skipped; syntax/tooling checks still run. Neither
 check executes a runtime or establishes publication/device acceptance for the current artifact lock.
+
+Current native correctness requirements: [PREVIEW5_3.md](PREVIEW5_3.md).
