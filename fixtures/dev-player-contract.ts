@@ -1,9 +1,9 @@
 import type {
   AcceptedPackIdentity, ApplyDevPackAttempt, AtomicPresentationReceipt,
-  DevPackAttemptObservationError, DevPackAttemptQuery, DevPackAttemptReceipt, DevPlayerCommandInputs, ExecutionHealth,
+  DevPackAttemptObservationError, DevPackAttemptQuery, DevPackAttemptReceipt, DevPlayerCommandInputs, DevPlayerEvent, ExecutionHealth,
   HostLayout, HostLayoutObservation, HostSurfaceIdentity, NavigationLayoutRequest,
   PreparedRestartMeasurementAttempt, PrepareHostLayoutRequest,
-  ViewExecutionMetrics, ViewPreparationMetrics,
+  RuntimeDiagnosticsCapabilities, RuntimeRetirementErrorOrigin, ViewExecutionMetrics, ViewPreparationMetrics,
 } from '../types/weapp-container.js';
 
 const surface: HostSurfaceIdentity = { ownerId: '1', surfaceGeneration: '9007199254740993' };
@@ -25,6 +25,27 @@ const layout: HostLayout = {
   },
 };
 const accepted: AcceptedPackIdentity = { root: 'a'.repeat(64), acceptedPackRevision: '4', sessionId: 'session:1' };
+// Retirement origin stays bound to this old owner even after another acceptance.
+const retirementOrigin: RuntimeRetirementErrorOrigin = {
+  schemaVersion: 1, phase: 'retirement', operation: 'unload',
+  sessionId: accepted.sessionId, acceptedPackIdentity: accepted,
+};
+const retirementEvent: DevPlayerEvent = {
+  type: 'error', error: { code: 'ERR_TIMEOUT', message: 'retirement failed' }, origin: retirementOrigin,
+};
+// Legacy errors remain representable; consumers must not guess their owner.
+const legacyError: DevPlayerEvent = { type: 'error', error: { code: 'ERR_ENGINE', message: 'legacy diagnostic' } };
+const retirementCapabilities: RuntimeDiagnosticsCapabilities = { retirementErrorOrigin: { schemaVersion: 1 } };
+const legacyCapabilities: RuntimeDiagnosticsCapabilities = {};
+// @ts-expect-error An arbitrary call cannot be labeled as owner retirement.
+const invalidRetirementOperation: RuntimeRetirementErrorOrigin = { ...retirementOrigin, operation: 'render' };
+// @ts-expect-error Retirement origin cannot omit its frozen accepted identity.
+const missingRetirementIdentity: RuntimeRetirementErrorOrigin = { schemaVersion: 1, phase: 'retirement', operation: 'cancelHostCalls', sessionId: accepted.sessionId };
+// @ts-expect-error Origin is not a current frame or layout phase.
+const invalidRetirementPhase: RuntimeRetirementErrorOrigin = { ...retirementOrigin, phase: 'current' };
+// @ts-expect-error Unknown diagnostic schemas require separate negotiation.
+const invalidRetirementSchema: RuntimeDiagnosticsCapabilities = { retirementErrorOrigin: { schemaVersion: 2 } };
+void [retirementEvent, legacyError, retirementCapabilities, legacyCapabilities, invalidRetirementOperation, missingRetirementIdentity, invalidRetirementPhase, invalidRetirementSchema];
 const restartMeasurement: PreparedRestartMeasurementAttempt = {
   schemaVersion: 1, ownerId: surface.ownerId, attemptId: '9007199254740999',
   targetRoot: 'b'.repeat(64), expectedAccepted: accepted,

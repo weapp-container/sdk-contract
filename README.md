@@ -1,11 +1,18 @@
 # Weapp Container SDK contracts
 
-Source version `0.1.0-preview.5.6` (private preview), C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.5.7` (private preview), C ABI `1`. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
 
-Current source requires a newly built **0.1.0-preview.5.6** runtime and matching SDK bundles. Production, exact archive pins, private publication and consumer validation for this version are pending. The checked-in `runtime-artifacts.lock.json` retains the historical **0.1.0-preview.5.3** archive set (SHA-256 `ee393000b5726172755b24a31812f9b55051e710c2714edadb9b3ac287b95388`); it does not satisfy this source version. Preparation must reject that mismatch. Old native producer, archive and device evidence remains unchanged; new binaries require independent source and artifact bindings.
+Current source requires a newly built **0.1.0-preview.5.7** runtime and matching SDK bundles. Production, exact archive pins, private publication and consumer validation for this version are pending. The checked-in `runtime-artifacts.lock.json` retains the historical **0.1.0-preview.5.3** archive set (SHA-256 `ee393000b5726172755b24a31812f9b55051e710c2714edadb9b3ac287b95388`); it does not satisfy this source version. Preparation must reject that mismatch. Old native producer, archive and device evidence remains unchanged; new binaries require independent source and artifact bindings.
+
+This source adds optional error-event `origin` metadata negotiated by
+`capabilities.diagnostics.retirementErrorOrigin.schemaVersion === 1`. It freezes
+the retiring session and its accepted pack identity for `unload`,
+`cancelNavigation` or `cancelHostCalls`; it does not identify the currently
+accepted session. A legacy error without origin must fail safe rather than be
+assigned to the current session. These diagnostic fields do not change C ABI 1.
 
 The Apache-2.0 license applies to this repository's contracts, wrappers/tooling
 and authored example code. It does **not** license the separate runtime binaries.
@@ -190,7 +197,9 @@ physical-device or WeChat compatibility acceptance.
 
 The Dev Player declaration fixture also parses with Node 24 and, when an optional
 TypeScript compiler is installed, checks correct assignments plus rejected numeric
-identities, incomplete layouts and missing acceptance CAS. Without TypeScript that
+identities, incomplete layouts and missing acceptance CAS. The semantic check
+also covers invalid retirement operations, phases, missing frozen
+identity and unsupported diagnostic schema versions. Without TypeScript that
 semantic check is explicitly skipped; syntax/tooling checks still run. Neither
 check executes a runtime or establishes publication/device acceptance for the current artifact lock.
 

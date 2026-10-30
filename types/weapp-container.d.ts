@@ -112,6 +112,20 @@ export interface AcceptedPackIdentity {
   acceptedPackRevision: DecimalU64;
   sessionId: string;
 }
+/** Frozen retiring owner; never an observation of the current accepted session.
+ * Missing legacy origin must fail safe rather than infer ownership from current state. */
+export interface RuntimeRetirementErrorOrigin {
+  schemaVersion: 1;
+  phase: "retirement";
+  operation: "unload" | "cancelNavigation" | "cancelHostCalls";
+  sessionId: string;
+  acceptedPackIdentity: AcceptedPackIdentity;
+}
+/** Additive diagnostics over C ABI 1. Require schemaVersion 1 before interpreting
+ * an error origin; absence is legacy, not proof that an error belongs to current. */
+export interface RuntimeDiagnosticsCapabilities {
+  retirementErrorOrigin?: { schemaVersion: 1 };
+}
 /** A claim checked against the live native journal, never client authority. */
 export interface PreparedRestartMeasurementAttempt {
   schemaVersion: 1;
@@ -327,6 +341,7 @@ export interface DevPlayerCommandInputs {
   presented: AtomicPresentationReceipt;
 }
 export type DevPlayerEvent =
+  | { type: "error"; error: SdkError; origin?: RuntimeRetirementErrorOrigin }
   | { type: "hostLayoutObservation"; observation: HostLayoutObservation }
   | { type: "hostLayoutAccepted"; acceptedLayout: HostLayout }
   | { type: "hostLayoutError"; observation: HostLayoutObservation | null; error: SdkError }

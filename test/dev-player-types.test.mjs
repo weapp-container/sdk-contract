@@ -15,7 +15,7 @@ test('public adapter declarations and examples parse with Node 24 TypeScript syn
   }
 });
 
-test('adapter typecheck rejects numeric identities, half layouts and missing acceptance CAS', t => {
+test('adapter typecheck rejects numeric identities, half layouts, missing CAS and invalid retirement origins', t => {
   const require = createRequire(import.meta.url);
   let ts;
   try { ts = require('typescript'); }
