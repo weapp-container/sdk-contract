@@ -192,6 +192,55 @@ export interface ExecutionHealth {
   navigationFault: ExecutionFault | null;
   requiresRestart: boolean;
 }
+/** Closed metadata for one native owner-thread call, not a process identity. */
+export interface ViewBatchDiagnostics {
+  schemaVersion: 1;
+  engine: "quickjs" | "v8";
+  modern: boolean;
+  operation: "load" | "evaluate" | "render" | "registerDocuments" | "renderRegistered" | "releaseScopes" | "unknown";
+  batchSequence: DecimalU64 | null;
+  ownerThreadId: DecimalU64 | null;
+  /** Unsigned decimal u64 clock strings; zero is a valid clock observation. */
+  monotonicStartNs: string | null;
+  monotonicEndNs: string | null;
+  boottimeStartNs: string | null;
+  boottimeEndNs: string | null;
+  threadCpuStartNs: string | null;
+  threadCpuEndNs: string | null;
+  threadCpuElapsedNs: string | null;
+  errorCode: string | null;
+  androidTraceEnabled: boolean | null;
+  androidTraceEmitted: boolean;
+}
+export interface ViewPhaseTiming {
+  /** API returned without error; not a deadline or health acceptance. */
+  completed: boolean;
+  monotonicStartNs: string | null;
+  monotonicEndNs: string | null;
+  wallElapsedNs: string | null;
+  threadCpuStartNs: string | null;
+  threadCpuEndNs: string | null;
+  threadCpuElapsedNs: string | null;
+}
+/** Optional QuickJS detail only; V8 reports null rather than invented costs. */
+export interface ViewBatchBreakdown {
+  schemaVersion: 1;
+  engine: "quickjs";
+  modern: boolean;
+  operation: ViewBatchDiagnostics["operation"];
+  batchSequence: DecimalU64 | null;
+  ownerThreadId: DecimalU64 | null;
+  phases: {
+    /** Nested aggregate; do not add it to its contained stages. */
+    contextCall: ViewPhaseTiming | null;
+    jsonStringifyApi: ViewPhaseTiming | null;
+    utf8CopyApi: ViewPhaseTiming | null;
+    finalDeadlineCheck: ViewPhaseTiming | null;
+    poisonDrop: ViewPhaseTiming | null;
+    /** Unsigned decimal count, null when extraction did not succeed. */
+    outputBytes: string | null;
+  };
+}
 /** Observed native provider work; lazy compilation may share an execution call. */
 export interface ViewProviderStages {
   batches: number;
@@ -203,6 +252,11 @@ export interface ViewProviderStages {
   outputDecodeNs: number;
   /** Null when the provider cannot independently measure compilation. */
   compileNs: number | null;
+  inputBytes?: number;
+  documentRegistrations?: number;
+  registeredRenderBatches?: number;
+  lastBatch?: ViewBatchDiagnostics | null;
+  lastBatchBreakdown?: ViewBatchBreakdown | null;
 }
 export interface ViewPreparationMetrics {
   elapsedNs: number;

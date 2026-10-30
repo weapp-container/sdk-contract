@@ -194,3 +194,40 @@ adapters must propagate all negotiated fields and events, keep measurement
 waits bounded/cancellable, and preserve actual owner/surface lifecycle. A runtime
 remaining on preview.4 pins cannot be described as preview.5 validated merely
 because the wrapper source declares these additions.
+
+### Optional QuickJS output/cleanup diagnostic breakdown
+
+`providerStages.lastBatchBreakdown` is an independent closed schema 1. Its
+engine/profile/operation/thread/sequence must match the adjacent `lastBatch`;
+these identities do not establish a process epoch or a Player event causal join.
+V8 and disabled/unsupported observation omit this optional field. Consumers may
+also treat null as unavailable; neither representation reports measured zeros.
+
+The fixed phases are `contextCall`, `jsonStringifyApi`, `utf8CopyApi`,
+`finalDeadlineCheck` and `poisonDrop`. A null phase means it was not attempted,
+is not applicable or has no supported measurement. A present phase's
+`completed` means the wrapped API returned without an error, not that it met
+the deadline or produced an accepted frame. Failed API returns still have
+measurements. Each clock is an unsigned decimal u64 string or null; missing or
+regressing clock pairs produce null elapsed values, never fabricated zeros.
+`outputBytes` is the actual successfully extracted UTF-8 length or null.
+
+The JSON stage includes QuickJS's public intrinsic wrapper and its input Value
+release; it is not pure C serializer CPU. The UTF-8 stage includes conversion,
+UTF-8 validation, Rust allocation/copy and native string release. Modern View's
+private JSON writer remains in execution; its native JSON stage is null.
+`contextCall` is a nested aggregate including runtime-lock acquisition, parse,
+execution, output, native error mapping and local/guard destruction. Never sum
+it with its contained stages or attribute residual wall time to GC or scheduling
+without independent evidence. Poison drop contains Context/Runtime destruction,
+including QuickJS's shutdown GC; it does not prove how much time GC consumed.
+
+The existing `vmOutputEncodeNs` aggregate and closed `lastBatch` schema remain
+unchanged. Raw stage samples allocate nothing and make no guest calls; wire
+formatting happens only after the existing final deadline check and any poison
+drop, retaining the original post-check destruction and formatting order. The
+50 ms/shorter outer deadline policy is unchanged; these measurements do not add
+budget or prove that diagnostic overhead fits within it.
+This observation does not modify errors, cancellation, realm lifetime, result
+caching or health decisions. Successful API measurements can accompany a final
+timeout. These diagnostics alone are not a performance pass.
