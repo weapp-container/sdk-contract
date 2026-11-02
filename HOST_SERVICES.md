@@ -49,6 +49,22 @@ explicit retry. `prepareAccountHostServiceSnapshots` accepts only that current
 unacknowledged operation so new modules can synchronously read fresh identity.
 Closing also awaits custom resources; failed close remains blocked and retryable.
 
+Asynchronous native snapshot refreshes require
+`capabilities.hostServices.snapshotOwnerContext === "1.0"`. Before starting work,
+freeze `{application, account, sessionId}` from native `state.hostServicesState`
+and `state.sessionId`, then pass it as `updateHostServiceSnapshots.context` with
+the eventual values. The runtime compares the complete trusted application,
+accepted pack root, account/epoch and current internal session. Account switches,
+application logout and same-account reloads invalidate earlier refreshes with
+`ERR_CANCELLED`; malformed contexts fail. Do not read the new owner when an old
+request finishes and attach its identity to that result. This native owner context
+does not require a pending API call. Full API contexts are also accepted, without
+using their call ID as snapshot authorization. New adapters must reject older
+runtimes lacking the capability, never retry after silently dropping context.
+Existing synchronous snapshots produced on the current owner thread may omit
+context. During replacement, live updates remain blocked until the new owner
+starts; its matching context may refresh while awaiting first presentation.
+
 `managedFileScope` is native-only and returns the core-held file lease, user root,
 auxiliary native root and scope ID. Its namespace excludes version and epoch and
 includes host/tenant, app/environment and principal. Private host paths never enter

@@ -357,7 +357,7 @@ export interface DevPlayerCommandInputs {
   migrateLegacyStorage: {sourceKey:string};
   deleteAccountData: {principalId:string};
   prepareAccountHostServiceSnapshots: {operationId:string;values:Record<string,JsonValue>};
-  updateHostServiceSnapshots: {values:Record<string,JsonValue>};
+  updateHostServiceSnapshots: {values:Record<string,JsonValue>;context?:HostSnapshotOwnerContext};
   switchAccount: {account:HostAccount;launches?:Record<string,HostAccountLaunch>};
   queryAccountSwitch: {operationId?:string};
   updateAccountSwitchLaunch: {options:HostAccountLaunch};
@@ -381,8 +381,11 @@ export interface HostServicesConfig {
   application:TrustedApplication;account:HostAccount;
   apis?:string[];syncValues?:Record<string,JsonValue>;
 }
-export interface HostApiCallContext {
+/** Freeze from native state before async work; not a pending guest API call. */
+export interface HostSnapshotOwnerContext {
   application:TrustedApplication;account:HostAccount;sessionId:string;
+}
+export interface HostApiCallContext extends HostSnapshotOwnerContext {
   callId:string;api:string;deadlineNs:DecimalU64|null;cancelToken:string|null;
   componentTarget?:{pageId:DecimalU64;nodeId:string;ownerScopeId:string|null};
 }
