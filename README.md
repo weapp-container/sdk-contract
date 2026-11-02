@@ -1,11 +1,11 @@
 # Weapp Container SDK contracts
 
-Source version `0.1.0-preview.5.7` (private preview), C ABI `1`. This repository contains the C embedding
+Source version `0.1.0-preview.6.0` (private preview), C ABI `1`. [Host services protocol](./HOST_SERVICES.md) covers trusted identity, payment, devices and account isolation. This repository contains the C embedding
 header, TypeScript business API, adapter contract, shared consumer fixture and
 authorized binary retrieval tools. It contains no Rust runtime, engine, renderer
 implementation, native binary, private monorepo history or build cache.
 
-Current source requires a newly built **0.1.0-preview.5.7** runtime and matching SDK bundles. Production, exact archive pins, private publication and consumer validation for this version are pending. The checked-in `runtime-artifacts.lock.json` retains the historical **0.1.0-preview.5.3** archive set (SHA-256 `ee393000b5726172755b24a31812f9b55051e710c2714edadb9b3ac287b95388`); it does not satisfy this source version. Preparation must reject that mismatch. Old native producer, archive and device evidence remains unchanged; new binaries require independent source and artifact bindings.
+Current source requires a newly built **0.1.0-preview.6.0** runtime and matching SDK bundles. Production, exact archive pins, private publication and consumer validation for this version are pending. The checked-in `runtime-artifacts.lock.json` retains the historical **0.1.0-preview.5.3** archive set (SHA-256 `ee393000b5726172755b24a31812f9b55051e710c2714edadb9b3ac287b95388`); it does not satisfy this source version. Preparation must reject that mismatch. Old native producer, archive and device evidence remains unchanged; new binaries require independent source and artifact bindings.
 
 This source adds optional error-event `origin` metadata negotiated by
 `capabilities.diagnostics.retirementErrorOrigin.schemaVersion === 1`. It freezes

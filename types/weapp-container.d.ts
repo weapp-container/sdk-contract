@@ -5,6 +5,13 @@ export interface WeappContainerBridge {
   postMessage(payload: JsonValue): void;
   onMessage(listener: (payload: JsonValue) => void): void;
   offMessage(listener?: (payload: JsonValue) => void): void;
+  readonly identity: {
+    getState(): JsonValue;
+    onChange(listener:(value:JsonValue)=>void):void;
+    offChange(listener?:(value:JsonValue)=>void):void;
+    logout(options?:HostInvokeOptions):Promise<JsonValue>;
+  };
+  readonly payment: { request(options: {orderId:string;idempotencyKey?:string;[key:string]:JsonValue|undefined}):Promise<JsonValue> };
 }
 declare global { const weappContainer: WeappContainerBridge; }
 
@@ -300,7 +307,7 @@ export interface ViewExecutionMetrics {
  * Pack acceptance, layout, frame and presentation are independent identities. */
 export interface DevPlayerState {
   schemaVersion: 1;
-  status: "empty" | "ready" | "closing" | "closed";
+  status: "empty" | "ready" | "identitySwitching" | "closing" | "closed";
   ownerId: DecimalU64;
   sessionId: string | null;
   generation: number;
@@ -339,6 +346,79 @@ export interface DevPlayerCommandInputs {
   cancelDevPackAttempt: DevAttemptIdentity;
   acceptedPackIdentity: Record<string, never>;
   presented: AtomicPresentationReceipt;
+  configureHostServices: HostServicesConfig;
+  registerApiHandler: {name:string};
+  hostApiEvent: HostApiEvent;
+  hostComponentFrame: HostComponentFrame;
+  hostComponentEvent: HostComponentEvent;
+  hostComponents: Record<string, never>;
+  managedFileScope: Record<string, never>;
+  authorizeInstalledPack: TrustedApplication;
+  migrateLegacyStorage: {sourceKey:string};
+  deleteAccountData: {principalId:string};
+  prepareAccountHostServiceSnapshots: {operationId:string;values:Record<string,JsonValue>};
+  updateHostServiceSnapshots: {values:Record<string,JsonValue>};
+  switchAccount: {account:HostAccount;launches?:Record<string,HostAccountLaunch>};
+  queryAccountSwitch: {operationId?:string};
+  updateAccountSwitchLaunch: {options:HostAccountLaunch};
+  acknowledgeAccountCleanup:{operationId:string};
+  retryAccountSwitch: {options?:HostAccountLaunch};
+  cancelAccountSwitch: {operationId:string};
+  createHostBinary:{bytes:number[]};
+  readHostBinary:{id:string;offset:number;length:number};
+  retainHostBinary:{id:string};
+  releaseHostBinary:{id:string};
+}
+
+/** Host-only trusted installation record. A digest proves integrity; the host
+ * authenticates publisher/install policy before binding this record to bytes. */
+export interface TrustedApplication {
+  hostAppId:string;tenantId:string;publisherId:string;appId:string;
+  environment:"develop"|"trial"|"release";version:string;packRoot:string;
+}
+export interface HostAccount {principalId:string|null;epoch:DecimalU64;}
+export interface HostServicesConfig {
+  application:TrustedApplication;account:HostAccount;
+  apis?:string[];syncValues?:Record<string,JsonValue>;
+}
+export interface HostApiCallContext {
+  application:TrustedApplication;account:HostAccount;sessionId:string;
+  callId:string;api:string;deadlineNs:DecimalU64|null;cancelToken:string|null;
+  componentTarget?:{pageId:DecimalU64;nodeId:string;ownerScopeId:string|null};
+}
+/** Native-only paths; never expose this record or host credentials to guest JS. */
+export interface ManagedFileScope {
+  root:string;auxiliaryRoot:string;scopeId:string;
+  application:TrustedApplication;account:HostAccount;
+}
+export type HostApiKind="syncSnapshot"|"syncLocal"|"async"|"task"|"subscription"|"object";
+export interface HostApiFailure {
+  code:"invalid_request"|"permission_denied"|"timeout"|"cancelled"|"unsupported";
+  message:string;retryable?:boolean;
+  /** Preserved verbatim as public API failure fields. Never put secrets here. */
+  details?:Record<string,JsonValue> & {errCode?:number|string;errMsg?:string};
+}
+export interface HostApiEvent {
+  sessionId:string;accountEpoch:DecimalU64;subscriptionId:string;
+  sequence:DecimalU64;value:JsonValue;objectId?:string|null;event?:string|null;
+}
+export interface HostComponentEvent {
+  sessionId:string;accountEpoch:DecimalU64;nodeId:string;event:string;
+  sequence:DecimalU64;value:JsonValue;
+}
+export interface HostBinaryHandle {id:string;byteLength:number;sessionId:string;accountEpoch:DecimalU64;}
+/** One retain reference transfers on successful materialization of a payload.
+ * Failed validation consumes none. Revocation invalidates every owned handle. */
+export interface HostBinaryReference {__weappBinary:{handle:string};}
+export interface HostAccountLaunch {route?:string;options?:Record<string,JsonValue>;initialHostChrome?:HostChromeGeometry;initialHostLayout?:HostLayout;}
+export interface AccountSwitchReceipt {
+  operationId:string;epoch:DecimalU64;
+  phase:"revoking"|"stoppingResources"|"waitingForSurface"|"flushingStorage"|"starting"|"awaitingPresentation"|"complete"|"failed"|"superseded";
+  sessionId:string|null;error:SdkError|null;
+}
+export interface HostServicesCapabilities {
+  protocolVersion:"1.0";enabled:boolean;registeredApis:string[]|null;
+  trustedContext:true;events:true;accountSwitch:true;binaryHandles:true;
 }
 export type DevPlayerEvent =
   | { type: "error"; error: SdkError; origin?: RuntimeRetirementErrorOrigin }
@@ -348,3 +428,9 @@ export type DevPlayerEvent =
   | { type: "navigationLayout"; request: NavigationLayoutRequest | null }
   | { type: "executionHealth"; schemaVersion: 1; sessionId: string | null; generation: number; health: ExecutionHealth | null }
   | { type: "devPackAttempt"; receipt: DevPackAttemptReceipt };
+
+/** Native preview frame in the accepted component's normal paint order. */
+export interface HostComponentFrame {
+  sessionId:string;accountEpoch:DecimalU64;pageId:DecimalU64;nodeId:string;sequence:DecimalU64;
+  width:number;height:number;format:'rgba8';pixels:number[];
+}
