@@ -204,3 +204,17 @@ semantic check is explicitly skipped; syntax/tooling checks still run. Neither
 check executes a runtime or establishes publication/device acceptance for the current artifact lock.
 
 Current native correctness requirements: [PREVIEW5_3.md](PREVIEW5_3.md).
+
+### System tab bar presenter admission
+
+`systemTabBar` is a trusted host configuration option. It defaults to `false`, and
+`false` is omitted from the wire configuration for compatibility. Set it to `true`
+with a paired runtime/SDK and an installed system tab chrome consumer, such as the
+dev Player Flutter tabs or its Windows/Gtk overlays.
+
+The runtime supports bounded `setTabBarBadge`, `removeTabBarBadge`,
+`showTabBarRedDot`, `hideTabBarRedDot`, and `setTabBarStyle` transactions with a
+Partial capability ceiling. Custom tab bars remain Unsupported. `showTabBar`,
+`hideTabBar`, and `setTabBarItem` are not implemented by this option. The flag
+admits the host consumer; it does not establish WeChat visual/parameter parity
+or platform acceptance.
