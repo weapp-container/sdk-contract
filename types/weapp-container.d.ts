@@ -59,6 +59,16 @@ export interface SdkError { code: string; message: string; }
 export interface HostSafeArea {
   left: number; right: number; top: number; bottom: number; width: number; height: number;
 }
+/** Container extension; all values are local logical coordinates of the rendering View. */
+export interface HostWindowLayout {
+  version: 1;
+  safeInsets: { top: number; right: number; bottom: number; left: number };
+  /** Physical edge resolved by the host, including RTL. */
+  verticalBarEdge: 'left' | 'right' | 'none';
+  /** Active, surface-clipped regions. Host margins are already included. */
+  reservedRegions: Array<{ id: string; kind: 'occlusion' | 'division'; x: number; y: number; width: number; height: number }>;
+}
+
 export interface HostWindowMetrics {
   windowWidth: number;
   windowHeight: number;
@@ -68,6 +78,7 @@ export interface HostWindowMetrics {
   statusBarHeight: number;
   screenTop: number;
   safeArea?: HostSafeArea;
+  hostLayout?: HostWindowLayout;
   deviceOrientation: "portrait" | "landscape";
 }
 export interface AtomicHostLayoutCapabilities {

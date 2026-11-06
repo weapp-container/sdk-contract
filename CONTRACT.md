@@ -215,3 +215,26 @@ Old-size observations during staging cannot resize the new session backwards.
 The native wrapper's transform-only `prepareHostChrome` must use the Flutter-root
 to-screen transform, rather than aligning the prospective rectangle to the old
 content view origin; preparing it never mutates the accepted runtime.
+
+
+## 宿主布局扩展 / Host layout extension
+
+`HostWindowMetrics.hostLayout` 是可选的 version-1 容器扩展，与完整窗口快照原子提交。
+`safeInsets`、`reservedRegions` 均位于当前渲染 View 的局部逻辑坐标系；`verticalBarEdge`
+使用已解析的物理 `left/right/none`。保留区域仅包含有效遮挡与折叠分隔，系统 margins 已计入框。
+画布覆盖完整 View，内容与控件独立避让；原有 `safeArea` 的屏幕固定坐标语义不变。
+省略扩展会清除旧布局。布局字段、保留区域或侧栏发生变化时，即使窗口宽高相同也会撤销旧输入及呈现回执；
+新的对应画面确认后才能继续交互。
+
+页面使用 `wx.getWindowInfo().hostLayout` 读取已提交值，并显式声明和订阅
+`wx.onHostLayoutChange(listener)` / `wx.offHostLayoutChange(listener)`。
+通知为 `{ hostLayout }`，清除时为 `null`；仅布局变化不触发尺寸事件 `onResize`。
+
+The optional version-1 `HostWindowMetrics.hostLayout` is committed atomically with window metrics.
+Insets and active region frames use rendering-View-local logical coordinates, with margins already included.
+The physical rail edge is `left`, `right`, or `none`. Preserve full canvas coverage and protect controls separately;
+legacy fixed-screen `safeArea` semantics do not change. Omission clears the extension.
+Layout changes, including changes without a resize, invalidate old input and presentation receipts until a fresh
+matching frame is acknowledged. Mini-apps can read `wx.getWindowInfo().hostLayout` and explicitly declare
+`wx.onHostLayoutChange` / `wx.offHostLayoutChange`. Callbacks receive `{ hostLayout }`, or `null` when cleared;
+layout-only changes do not emit `onResize`.
