@@ -1,10 +1,12 @@
 # Weapp Container SDK 合约
 
+核心运行时与 SDK 自有源码采用 Apache-2.0，可按[主仓库源码构建说明](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-repositories.md)构建当前运行库。现有预编译归档保留原许可、访问要求及精确版本和哈希锁；本次源码更新不发布替代二进制。
+
 **简体中文** | [English](README.en.md)
 
 Weapp Container 各端 SDK 共用的 C ABI、TypeScript 类型、适配协议、测试 pack 和运行库下载工具。应用开发优先使用 [Android](https://github.com/weapp-container/sdk-android)、[iOS](https://github.com/weapp-container/sdk-ios)、[Desktop](https://github.com/weapp-container/sdk-desktop)、[Flutter](https://github.com/weapp-container/sdk-flutter) 或 [React Native](https://github.com/weapp-container/sdk-react-native) SDK；本仓库主要供自研宿主、适配器及构建工具使用。
 
-当前源码版本：`0.1.0-preview.5.7`，C ABI：`1`。源码按 Apache-2.0 开源，不包含运行库实现或二进制。运行库单独授权，下载权限不等于二进制使用许可，分发时须保留 `RUNTIME-LICENSE` 和第三方声明。
+当前源码版本：`0.1.0-preview.5.7`，C ABI：`1`。源码按 Apache-2.0 开源，不包含运行库实现或二进制。当前运行库源码采用 Apache-2.0，分发时须保留 `RUNTIME-LICENSE` 和第三方声明。
 
 ## 获取与目录
 

@@ -1,10 +1,12 @@
 # Weapp Container SDK Contracts
 
+The core runtime and SDK source are available under Apache-2.0. Build the current runtime from the [core source guide](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-repositories.md). Existing prebuilt archives retain their original licenses, access requirements and exact version/hash pins; this source update does not publish replacement binaries.
+
 [简体中文](README.md) | **English**
 
 Shared C ABI, TypeScript types, adapter protocols, test packs, and runtime retrieval tools for Weapp Container SDKs. Application developers should start with the [Android](https://github.com/weapp-container/sdk-android), [iOS](https://github.com/weapp-container/sdk-ios), [Desktop](https://github.com/weapp-container/sdk-desktop), [Flutter](https://github.com/weapp-container/sdk-flutter), or [React Native](https://github.com/weapp-container/sdk-react-native) SDK. This repository primarily serves custom hosts, adapters, and build tools.
 
-Source version: `0.1.0-preview.5.7`. C ABI: `1`. Source is open under Apache-2.0; runtime implementations and binaries are not included. Runtime binaries require a separate license. Download access does not grant binary usage rights; retain `RUNTIME-LICENSE` and third-party notices when distributing them.
+Source version: `0.1.0-preview.5.7`. C ABI: `1`. Source is open under Apache-2.0; runtime implementations and binaries are not included. New builds of the open-source runtime carry Apache-2.0. Download access does not grant binary usage rights; retain `RUNTIME-LICENSE` and third-party notices when distributing them.
 
 ## Checkout and files
 
