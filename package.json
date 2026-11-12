@@ -5,6 +5,11 @@
   "type": "module",
   "license": "Apache-2.0",
   "description": "Public embedding contracts and authorized runtime artifact tooling; no runtime implementation",
-  "engines": { "node": ">=24 <25" },
-  "scripts": { "test": "node --test test/*.test.mjs" }
+  "engines": {
+    "node": ">=24 <25"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "docs:check": "node tools/documentation/check.mjs && node tools/documentation/check-content.mjs"
+  }
 }
