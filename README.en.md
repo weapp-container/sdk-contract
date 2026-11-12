@@ -1,6 +1,6 @@
 # Weapp Container SDK Contracts
 
-First public publication is being prepared. Use these commands once this version is visible in its registry. Historical private archives and locks retain their original identities.
+SDK contracts, C headers and runtime download tools are distributed through npm. Historical private archives and locks retain their original identities.
 
 Contract version `0.1.0-preview.7.0`, C ABI `1`. Public preview installation:
 
@@ -53,7 +53,7 @@ Call `connectHost()` on page entry and its returned cleanup function on exit. Re
 
 ## Minimal C ABI integration
 
-Add the headers to your include path and link a matching, authorized runtime. Start by checking the ABI:
+Add the headers to your include path and link a matching public runtime. Start by checking the ABI:
 
 ```c
 #include <stdio.h>
@@ -81,28 +81,29 @@ Initialize every result buffer to `{NULL, 0}`. Results are length-delimited UTF-
 
 ## Retrieve an exact runtime version
 
-The [default lock](runtime-artifacts.lock.json) still pins historical `0.1.0-preview.5.3` archives and cannot serve as the matching runtime for current `preview.5.7` source. New archives and independent consumer validation for the current source remain pending. Choose a reviewed lock that exactly matches your target SDK.
+The [public lock](runtime-artifacts.0.1.0-preview.7.0.lock.json) pins the archives, sizes and SHA-256 hashes for `0.1.0-preview.7.0` from the core `runtime-v0.1.0-preview.7.0` Release. Downloads support anonymous access. The [historical lock](runtime-artifacts.lock.json) remains unchanged.
 
-The following command demonstrates retrieving the iOS arm64 runtime from the existing historical lock. After obtaining access, inject `WEAPP_CONTAINER_RUNTIME_TOKEN` through your secret manager or CI secrets:
+From a source checkout, retrieve the iOS arm64 runtime using the public lock:
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.3 \
+  --manifest runtime-artifacts.0.1.0-preview.7.0.lock.json --version 0.1.0-preview.7.0 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads \
   --install-dir .runtime/native/aarch64-apple-ios
 ```
 
-For authorized offline archives, add `--artifact-dir /absolute/authorized-archives` or set `WEAPP_CONTAINER_RUNTIME_ARTIFACT_DIR`. Explicit offline input never falls back to the network. The tool checks version, ABI, size, and SHA-256 against the lock and installs only after full verification. Failures do not select older libraries.
+For verified offline archives of this version, add `--artifact-dir /absolute/verified-archives` or set `WEAPP_CONTAINER_RUNTIME_ARTIFACT_DIR`. Explicit offline input never falls back to the network. The tool checks version, ABI, size, and SHA-256 against the lock and installs only after full verification. Failures do not select older libraries.
 
 Node.js API example:
 
 ```js
-import { downloadRuntimeArtifact } from './tools/runtime-artifacts.mjs';
+import { fileURLToPath } from 'node:url';
+import { downloadRuntimeArtifact } from '@weapp-container/sdk-contract/runtime-artifacts';
 
 await downloadRuntimeArtifact({
-  manifestPath: 'runtime-artifacts.lock.json',
-  version: '0.1.0-preview.5.3',
+  manifestPath: fileURLToPath(import.meta.resolve('@weapp-container/sdk-contract/runtime-artifacts.lock.json')),
+  version: '0.1.0-preview.7.0',
   component: 'runtime', platform: 'ios', arch: 'arm64-device', abiVersion: 1,
   outDirectory: '.runtime/downloads',
   installDirectory: '.runtime/native/aarch64-apple-ios',

@@ -1,6 +1,6 @@
 # Weapp Container SDK 合约
 
-首次公开发布正在准备；安装命令须在对应注册源出现本版本后使用。历史私有归档及其锁文件保持原样。
+SDK 合约、C 头文件和运行库下载工具通过 npm 提供。历史私有归档及其锁文件保持原样。
 
 契约包版本 `0.1.0-preview.7.0`，C ABI 保持 `1`。公开预览安装入口：
 
@@ -53,7 +53,7 @@ function connectHost() {
 
 ## C ABI 最小接入
 
-将头文件加入 include 路径，并链接同版本的已授权运行库。可先检查 ABI：
+将头文件加入 include 路径，并链接同版本的公开运行库。可先检查 ABI：
 
 ```c
 #include <stdio.h>
@@ -81,28 +81,29 @@ int main(void) {
 
 ## 按精确版本获取运行库
 
-当前 [默认锁文件](runtime-artifacts.lock.json) 仍锁定历史 `0.1.0-preview.5.3` 归档，不能用作当前 `preview.5.7` 源码的配套运行库。当前源码所需的新归档及独立消费验证仍待提供；接入时应选用与目标 SDK 完全匹配的已审核锁文件。
+当前 [公开锁文件](runtime-artifacts.0.1.0-preview.7.0.lock.json) 固定 `0.1.0-preview.7.0` 的归档、大小和 SHA-256，来源为主仓库 `runtime-v0.1.0-preview.7.0` Release，可匿名下载。原 [历史锁文件](runtime-artifacts.lock.json) 保持原样。
 
-以下命令仅演示按现有历史锁获取 iOS arm64 运行库。获得授权后，通过密钥管理器或 CI secret 注入 `WEAPP_CONTAINER_RUNTIME_TOKEN`：
+在源码检出中，可按公开锁获取 iOS arm64 运行库：
 
 ```sh
 node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.lock.json --version 0.1.0-preview.5.3 \
+  --manifest runtime-artifacts.0.1.0-preview.7.0.lock.json --version 0.1.0-preview.7.0 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads \
   --install-dir .runtime/native/aarch64-apple-ios
 ```
 
-已有授权离线归档时，在同一命令中增加 `--artifact-dir /absolute/authorized-archives`，或设置 `WEAPP_CONTAINER_RUNTIME_ARTIFACT_DIR`。显式离线输入不会回退到网络。工具按锁文件校验版本、ABI、大小及 SHA-256，并在完整验证后安装；失败不会选用旧库。
+已有本版本的离线归档时，在同一命令中增加 `--artifact-dir /absolute/verified-archives`，或设置 `WEAPP_CONTAINER_RUNTIME_ARTIFACT_DIR`。显式离线输入不会回退到网络。工具按锁文件校验版本、ABI、大小及 SHA-256，并在完整验证后安装；失败不会选用旧库。
 
 Node.js 调用示例：
 
 ```js
-import { downloadRuntimeArtifact } from './tools/runtime-artifacts.mjs';
+import { fileURLToPath } from 'node:url';
+import { downloadRuntimeArtifact } from '@weapp-container/sdk-contract/runtime-artifacts';
 
 await downloadRuntimeArtifact({
-  manifestPath: 'runtime-artifacts.lock.json',
-  version: '0.1.0-preview.5.3',
+  manifestPath: fileURLToPath(import.meta.resolve('@weapp-container/sdk-contract/runtime-artifacts.lock.json')),
+  version: '0.1.0-preview.7.0',
   component: 'runtime', platform: 'ios', arch: 'arm64-device', abiVersion: 1,
   outDirectory: '.runtime/downloads',
   installDirectory: '.runtime/native/aarch64-apple-ios',
