@@ -1,0 +1,23 @@
+name: Package public npm archive
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: node tools/package-public.mjs --out .runtime/public-npm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public-npm
+          path: .runtime/public-npm/
+          retention-days: 30
