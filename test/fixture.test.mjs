@@ -39,9 +39,10 @@ test('authored page declares every wx dependency used at module load and lifecyc
     assert.ok(['partial', 'full'].includes(manifest.capabilities[name]), `Missing fixture capability: ${name}`);
     used.add(name);
   };
-  let definition, listener, instance;
+  let definition, listener, instance, orientation = 'portrait';
   const methods = {
     getWindowInfo: () => ({ windowWidth: 375, windowHeight: 667 }),
+    getSystemSetting: () => ({ deviceOrientation: orientation }),
     getStorageSync: key => storage.get(key) || '',
     setStorageSync: (key, value) => storage.set(key, value),
     createSelectorQuery: () => ({ select() { return this; }, boundingClientRect() { return this; }, exec(callback) { callback([{ left: 0, top: 0, width: 100, height: 160 }]); } }),
@@ -59,11 +60,15 @@ test('authored page declares every wx dependency used at module load and lifecyc
   });
   instance = { ...definition, route: 'pages/home/index', data: { ...definition.data }, setData(patch) { Object.assign(this.data, patch); } };
   instance.onLoad(); instance.onShow(); instance.onTap(); timers.shift()();
+  orientation = 'landscape'; instance.onResize();
   listener({ op: 'inspect' }); listener({ op: 'request', url: 'http://fixture.invalid/' });
   assert.equal(instance.data.count, 1);
   assert.equal(storage.get('sdk-count'), 1);
   assert.ok(messages.some(message => message.kind === 'timer'));
   assert.ok(messages.some(message => message.kind === 'geometry'));
+  assert.equal(messages.find(message => message.kind === 'initial').deviceOrientation, 'portrait');
+  assert.equal(messages.find(message => message.kind === 'resize').deviceOrientation, 'landscape');
+  assert.equal(messages.find(message => message.kind === 'geometry').deviceOrientation, 'landscape');
   assert.ok(messages.some(message => message.kind === 'network'));
   assert.deepEqual([...used].sort(), Object.keys(manifest.capabilities).sort());
 });
