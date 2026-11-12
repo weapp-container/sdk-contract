@@ -3,6 +3,31 @@
 
 [简体中文](README.md) · **English**
 
+<a id="公开发行候选preview7"></a>
+## Public distribution candidate: preview.7
+
+The installation examples below describe the preview.7 distribution candidate. Check the named registry or release before using them; source publication does not establish package publication or device acceptance. The source-build examples later in this document refer to the reviewed preview.6 checkout below. The core builder currently emits preview.6, so do not combine that runtime with preview.7 wrappers.
+
+First public publication is being prepared. Use these commands once this version is visible in its registry. Historical private archives and locks retain their original identities.
+
+Contract version `0.1.0-preview.7.0`, C ABI `1`. Public preview installation:
+
+```sh
+npm install @weapp-container/sdk-contract@0.1.0-preview.7.0
+```
+
+The package root exports types. Import tools from `@weapp-container/sdk-contract/runtime-artifacts` and `@weapp-container/sdk-contract/fixtures`. Public C headers are in `include/`. Native runtime implementations are distributed separately.
+
+<a id="已复核的源码构建版本"></a>
+### Reviewed source-build checkout
+
+```sh
+git clone https://github.com/weapp-container/sdk-contract.git sdk-contract-source
+cd sdk-contract-source
+git checkout d92b12077a89acdc85cd54d305bfa6ab3c3eea6c
+```
+
+
 
 [Documentation](https://container.weapp.dev/en/docs/) · [Source builds](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.en.md) · [APIs and protocols](https://github.com/weapp-container/sdk-contract/blob/main/README.en.md)
 

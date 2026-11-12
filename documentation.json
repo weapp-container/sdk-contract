@@ -108,8 +108,8 @@
         "repository": "weapp-container/sdk-contract",
         "path": "README.md"
       },
-      "reviewedChineseSummary": "Weapp Container SDK 合约；从当前源码开始；获取与目录；生成可加载的测试 pack；小程序与宿主通信；C ABI 最小接入；按精确版本获取运行库；检查与协议细节",
-      "reviewedChineseSha256": "9b62dd4ccd1a46a51bcde4aead9585bb1f8f7c096b6c5cb77b2bdcfc5c5f1052",
+      "reviewedChineseSummary": "合入 preview.7 公开发行候选的安装入口；保留已匹配的 preview.6 源码构建版本、历史锁与独立设备验收边界。",
+      "reviewedChineseSha256": "61d153ea78d3a31582c4e7634f999cd332bff124c68c536026308135da91b19a",
       "legacyHeadingIds": [
         "c-abi-最小接入",
         "weapp-container-sdk-合约",

@@ -3,12 +3,37 @@
 
 **简体中文** · [English](README.en.md)
 
+<a id="public-distribution-candidate-preview7"></a>
+## 公开发行候选：preview.7
+
+下列安装示例描述 preview.7 发行候选，使用前须确认对应注册源或 Release 已提供该版本；源码公开不代表包已发布或设备验收完成。本文后续源码构建示例使用下面固定的 preview.6 checkout。当前核心构建器仍输出 preview.6，不要将该运行库与 preview.7 包装层混用。
+
+首次公开发布正在准备；安装命令须在对应注册源出现本版本后使用。历史私有归档及其锁文件保持原样。
+
+契约包版本 `0.1.0-preview.7.0`，C ABI 保持 `1`。公开预览安装入口：
+
+```sh
+npm install @weapp-container/sdk-contract@0.1.0-preview.7.0
+```
+
+类型入口为包根；工具分别从 `@weapp-container/sdk-contract/runtime-artifacts` 和 `@weapp-container/sdk-contract/fixtures` 导出。C 头文件位于 `include/`。此包不包含原生运行库。
+
+<a id="reviewed-source-build-checkout"></a>
+### 已复核的源码构建版本
+
+```sh
+git clone https://github.com/weapp-container/sdk-contract.git sdk-contract-source
+cd sdk-contract-source
+git checkout d92b12077a89acdc85cd54d305bfa6ab3c3eea6c
+```
+
+
 
 [开发文档](https://container.weapp.dev/docs/) · [源码构建](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.md) · [API 与协议](https://github.com/weapp-container/sdk-contract/blob/main/README.md)
 
 Weapp Container 各端 SDK 共用的 C ABI、TypeScript 类型、适配协议、测试 pack 和运行库下载工具。应用开发优先使用 [Android](https://github.com/weapp-container/sdk-android/blob/main/README.md)、[iOS](https://github.com/weapp-container/sdk-ios/blob/main/README.md)、[Desktop](https://github.com/weapp-container/sdk-desktop/blob/main/README.md)、[Flutter](https://github.com/weapp-container/sdk-flutter/blob/main/README.md) 或 [React Native](https://github.com/weapp-container/sdk-react-native/blob/main/README.md) SDK；本仓库主要供自研宿主、适配器及构建工具使用。
 
-当前源码版本：`0.1.0-preview.5.7`，C ABI：`1`。源码按 Apache-2.0 开源，不包含运行库实现或二进制。当前运行库源码采用 Apache-2.0，分发时须保留 `RUNTIME-LICENSE` 和第三方声明。
+已复核源码示例版本：`0.1.0-preview.5.7`，C ABI：`1`。源码按 Apache-2.0 开源，不包含运行库实现或二进制。当前运行库源码采用 Apache-2.0，分发时须保留 `RUNTIME-LICENSE` 和第三方声明。
 
 <a id="start-from-current-source"></a>
 ## 从当前源码开始
