@@ -32,7 +32,10 @@
       ],
       "properties": {
         "repository": {
-          "const": "weapp-container/runtime-artifacts"
+          "enum": [
+            "weapp-container/weapp-container",
+            "weapp-container/runtime-artifacts"
+          ]
         },
         "releaseTag": {
           "type": "string",
@@ -130,5 +133,37 @@
       }
     }
   },
-  "$comment": "The loader additionally enforces exact requested version/ABI, releaseTag equality to runtime-v+version, component/platform and platform/architecture combinations, and unique target/file identities."
+  "$comment": "The loader additionally enforces exact requested version/ABI, releaseTag equality to runtime-v+version, component/platform and platform/architecture combinations, and unique target/file identities.",
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "source": {
+            "properties": {
+              "repository": {
+                "const": "weapp-container/runtime-artifacts"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "runtimeVersion": {
+            "enum": [
+              "0.1.0-preview.2",
+              "0.1.0-preview.3",
+              "0.1.0-preview.4",
+              "0.1.0-preview.5",
+              "0.1.0-preview.5.1",
+              "0.1.0-preview.5.2",
+              "0.1.0-preview.5.3",
+              "0.1.0-preview.5.5",
+              "0.1.0-preview.6.0"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

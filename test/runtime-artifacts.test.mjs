@@ -14,7 +14,7 @@ const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 const fileName = 'runtime-0.1.0-preview.2-linux-x86_64.tar.gz';
 const expected = { version: SDK_VERSION, platform: 'linux', arch: 'x86_64', component: 'runtime', abiVersion: 1 };
 function pin(bytes) { return { schemaVersion: 1, runtimeVersion: SDK_VERSION, abiVersion: 1,
-  source: { repository: 'weapp-container/runtime-artifacts', releaseTag: `runtime-v${SDK_VERSION}` },
+  source: { repository: 'weapp-container/weapp-container', releaseTag: `runtime-v${SDK_VERSION}` },
   artifacts: [{ component: 'runtime', platform: 'linux', arch: 'x86_64', fileName, size: bytes.length, sha256: hash(bytes) }] }; }
 async function context(t, bytes = Buffer.from('pinned runtime bytes')) {
   const root = await mkdtemp(join(tmpdir(), 'wc-contract-')); t.after(() => rm(root, { recursive: true, force: true }));
@@ -89,7 +89,9 @@ test('wrong offline bytes and symlinks fail without publishing a cache entry', a
 
 test('missing credentials fail explicitly before networking', async t => {
   const c = await context(t);
-  await assert.rejects(downloadRuntimeArtifact({ ...c.options, token: '', artifactDirectory: undefined, fetchImpl() { assert.fail('No request without credentials'); } }), { code: 'ERR_RUNTIME_CREDENTIALS' });
+  Object.assign(c.manifest, { runtimeVersion: '0.1.0-preview.5.3', source: { repository: 'weapp-container/runtime-artifacts', releaseTag: 'runtime-v0.1.0-preview.5.3' } });
+  await writeFile(c.manifestPath, JSON.stringify(c.manifest));
+  await assert.rejects(downloadRuntimeArtifact({ ...c.options, version: c.manifest.runtimeVersion, token: '', artifactDirectory: undefined, fetchImpl() { assert.fail('No legacy request without credentials'); } }), { code: 'ERR_RUNTIME_CREDENTIALS' });
 });
 
 test('authorized GitHub redirect strips Authorization from signed asset host', async t => {
