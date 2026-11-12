@@ -60,6 +60,7 @@ Tools require Node.js 24.x; runtime archive installation also needs Python 3. Th
 ```sh
 git clone https://github.com/weapp-container/sdk-contract.git
 cd sdk-contract
+git checkout d92b12077a89acdc85cd54d305bfa6ab3c3eea6c
 ```
 
 | File | Purpose |

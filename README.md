@@ -60,6 +60,7 @@ node sdk/contract/fixtures/make-acceptance-pack.mjs --out artifacts/hello-pack
 ```sh
 git clone https://github.com/weapp-container/sdk-contract.git
 cd sdk-contract
+git checkout d92b12077a89acdc85cd54d305bfa6ab3c3eea6c
 ```
 
 | 文件 | 用途 |

@@ -108,8 +108,8 @@
         "repository": "weapp-container/sdk-contract",
         "path": "README.md"
       },
-      "reviewedChineseSummary": "合入 preview.7 公开发行候选的安装入口；保留已匹配的 preview.6 源码构建版本、历史锁与独立设备验收边界。",
-      "reviewedChineseSha256": "61d153ea78d3a31582c4e7634f999cd332bff124c68c536026308135da91b19a",
+      "reviewedChineseSummary": "同步最新公开发行工作流入口，保留固定 preview.6 源码用法与 preview.7 发行候选的独立边界。",
+      "reviewedChineseSha256": "831d3455c1c8684daa2bfe8a81579b1de086e33e7181470a016ec09ac3ae4c3a",
       "legacyHeadingIds": [
         "c-abi-最小接入",
         "weapp-container-sdk-合约",
@@ -131,6 +131,19 @@
       },
       "reviewedChineseSummary": "双语文档维护；更新一组文档；网站快照；检查与测试",
       "reviewedChineseSha256": "6c0d12dd12a6cd4a1076e912f2a09d959772638769da314e76d1708cc7c5a64e",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "public-release",
+      "zh": "PUBLIC-RELEASE.md",
+      "en": "PUBLIC-RELEASE.en.md",
+      "section": "tools",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "PUBLIC-RELEASE.md"
+      },
+      "reviewedChineseSummary": "维护者发行顺序、认证、不可变资产与平台独立验收条件；不会自动发布或修改历史发行物。",
+      "reviewedChineseSha256": "696c7b5340f741f6b66fef0987454bd41e96b500a1205351c0d7012bd4e9093a",
       "legacyHeadingIds": []
     }
   ],
