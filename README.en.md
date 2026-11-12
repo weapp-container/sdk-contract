@@ -1,35 +1,14 @@
 # Weapp Container SDK Contracts
 
-Historical storage: updated downloaders map the nine frozen legacy `runtime-artifacts` versions to the private `weapp-container/runtime-artifacts-private-archive`, retaining original lock bytes, hashes and licenses and recording the resolved repository. Old downloaders must upgrade. The new repository at the old name contains retired tool source only; new runtime releases use the core repository. Private archive access still requires authorization, with no cross-repository fallback.
+First public publication is being prepared. Use these commands once this version is visible in its registry. Historical private archives and locks retain their original identities.
 
-Runtime packaging and publication now live in the [core repository](https://github.com/weapp-container/weapp-container/tree/main/tools/runtime-artifacts). New manifests select exact core releases through `--manifest`. The default lock retains its historical `runtime-artifacts` source, version, hashes and bundled licenses. The retired repository remains a read-only archive; downloads never fall back between repositories. Private repositories still require read access; source licensing does not imply public binary availability.
-
-The core runtime and SDK source are available under Apache-2.0. Build the current runtime from the [core source guide](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-repositories.md). Existing prebuilt archives retain their original licenses, access requirements and exact version/hash pins; this source update does not publish replacement binaries.
-
-[简体中文](README.md) | **English**
-
-Shared C ABI, TypeScript types, adapter protocols, test packs, and runtime retrieval tools for Weapp Container SDKs. Application developers should start with the [Android](https://github.com/weapp-container/sdk-android), [iOS](https://github.com/weapp-container/sdk-ios), [Desktop](https://github.com/weapp-container/sdk-desktop), [Flutter](https://github.com/weapp-container/sdk-flutter), or [React Native](https://github.com/weapp-container/sdk-react-native) SDK. This repository primarily serves custom hosts, adapters, and build tools.
-
-Source version: `0.1.0-preview.5.7`. C ABI: `1`. Source is open under Apache-2.0; runtime implementations and binaries are not included. New builds of the open-source runtime carry Apache-2.0. Download access does not grant binary usage rights; retain `RUNTIME-LICENSE` and third-party notices when distributing them.
-
-## Checkout and files
-
-Tools require Node.js 24.x; runtime archive installation also needs Python 3. There are no npm dependencies to install.
+Contract version `0.1.0-preview.7.0`, C ABI `1`. Public preview installation:
 
 ```sh
-git clone https://github.com/weapp-container/sdk-contract.git
-cd sdk-contract
+npm install @weapp-container/sdk-contract@0.1.0-preview.7.0
 ```
 
-| File | Purpose |
-| --- | --- |
-| [include/weapp_container_sdk.h](include/weapp_container_sdk.h) | C ABI, sessions, frames, GPU APIs, and ownership rules |
-| [include/weapp_container_sdk_gl.h](include/weapp_container_sdk_gl.h) | Optional GL resolver extension |
-| [types/weapp-container.d.ts](types/weapp-container.d.ts) | Mini-app messaging, host calls, and protocol types |
-| [CONTRACT.md](CONTRACT.md) | Host adapter scheduling, events, and lifecycle |
-| [FLUTTER_PROTOCOL.md](FLUTTER_PROTOCOL.md) | Flutter/native adapter channel contract |
-| [runtime-artifacts.schema.json](runtime-artifacts.schema.json) | Exact runtime artifact lock format |
-| [platforms.json](platforms.json) | Platform and architecture identifiers, not acceptance results |
+The package root exports types. Import tools from `@weapp-container/sdk-contract/runtime-artifacts` and `@weapp-container/sdk-contract/fixtures`. Public C headers are in `include/`. Native runtime implementations are distributed separately.
 
 ## Generate a loadable test pack
 

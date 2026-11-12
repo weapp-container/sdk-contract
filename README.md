@@ -1,33 +1,14 @@
 # Weapp Container SDK 合约
 
-运行库发行工具已迁入 [核心仓库](https://github.com/weapp-container/weapp-container/tree/main/tools/runtime-artifacts)。新清单使用核心仓库的精确版本 Release；用 `--manifest` 显式选取。更新后的下载器把旧锁中的 `runtime-artifacts` 标识定向到私有的 `weapp-container/runtime-artifacts-private-archive`，仅允许九个冻结版本，保留原版本、哈希及随附许可，回执记录实际存储库。旧版下载器需升级；同名新仓库只保留停更工具源码。无跨仓库回退，私有档案仍需读取权限，源码许可不代表历史发行物公开可用。
+首次公开发布正在准备；安装命令须在对应注册源出现本版本后使用。历史私有归档及其锁文件保持原样。
 
-核心运行时与 SDK 自有源码采用 Apache-2.0，可按[主仓库源码构建说明](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-repositories.md)构建当前运行库。现有预编译归档保留原许可、访问要求及精确版本和哈希锁；本次源码更新不发布替代二进制。
-
-**简体中文** | [English](README.en.md)
-
-Weapp Container 各端 SDK 共用的 C ABI、TypeScript 类型、适配协议、测试 pack 和运行库下载工具。应用开发优先使用 [Android](https://github.com/weapp-container/sdk-android)、[iOS](https://github.com/weapp-container/sdk-ios)、[Desktop](https://github.com/weapp-container/sdk-desktop)、[Flutter](https://github.com/weapp-container/sdk-flutter) 或 [React Native](https://github.com/weapp-container/sdk-react-native) SDK；本仓库主要供自研宿主、适配器及构建工具使用。
-
-当前源码版本：`0.1.0-preview.5.7`，C ABI：`1`。源码按 Apache-2.0 开源，不包含运行库实现或二进制。当前运行库源码采用 Apache-2.0，分发时须保留 `RUNTIME-LICENSE` 和第三方声明。
-
-## 获取与目录
-
-工具需要 Node.js 24.x，安装运行库归档还需要 Python 3；无需安装 npm 依赖。
+契约包版本 `0.1.0-preview.7.0`，C ABI 保持 `1`。公开预览安装入口：
 
 ```sh
-git clone https://github.com/weapp-container/sdk-contract.git
-cd sdk-contract
+npm install @weapp-container/sdk-contract@0.1.0-preview.7.0
 ```
 
-| 文件 | 用途 |
-| --- | --- |
-| [include/weapp_container_sdk.h](include/weapp_container_sdk.h) | C ABI、会话、帧和 GPU 接口及所有权规则 |
-| [include/weapp_container_sdk_gl.h](include/weapp_container_sdk_gl.h) | 可选 GL resolver 扩展 |
-| [types/weapp-container.d.ts](types/weapp-container.d.ts) | 小程序业务消息、宿主调用及协议类型 |
-| [CONTRACT.md](CONTRACT.md) | 宿主适配器的调度、事件和生命周期协议 |
-| [FLUTTER_PROTOCOL.md](FLUTTER_PROTOCOL.md) | Flutter 与原生适配器的通道约定 |
-| [runtime-artifacts.schema.json](runtime-artifacts.schema.json) | 精确版本运行库锁文件格式 |
-| [platforms.json](platforms.json) | 平台和架构标识，不代表平台已通过验证 |
+类型入口为包根；工具分别从 `@weapp-container/sdk-contract/runtime-artifacts` 和 `@weapp-container/sdk-contract/fixtures` 导出。C 头文件位于 `include/`。此包不包含原生运行库。
 
 ## 生成可加载的测试 pack
 
