@@ -38,13 +38,14 @@ export function makeFixture(_unusedRepository, destination) {
     // These are fixture dependencies, not a platform conformance claim. An empty
     // map intentionally disables the wx facade, including module-scope calls.
     capabilities: Object.fromEntries([
-      'getCurrentPages', 'wx.getWindowInfo', 'wx.getStorageSync', 'wx.setStorageSync',
+      'getCurrentPages', 'wx.getWindowInfo', 'wx.getSystemSetting', 'wx.getStorageSync', 'wx.setStorageSync',
       'wx.createSelectorQuery', 'wx.request', 'wx.timer',
     ].map(name => [name, 'partial'])),
     integrity: { algorithm: 'sha256', root: '' },
   };
   const page = `
-const firstWindow = wx.getWindowInfo();
+const observeWindow = () => ({...wx.getWindowInfo(),deviceOrientation:wx.getSystemSetting().deviceOrientation});
+const firstWindow = observeWindow();
 Page({
  data: {count:0,message:'Independent SDK consumer',shows:0},
  onLoad() {
@@ -63,7 +64,7 @@ Page({
      else if(message.op === 'store') { wx.setStorageSync('consumer-value',message.value); weappContainer.postMessage({kind:'stored'}); }
      else if(message.op === 'read') weappContainer.postMessage({kind:'storedValue',value:wx.getStorageSync('consumer-value')});
      else if(message.op === 'request') wx.request({url:message.url,success:response => weappContainer.postMessage({kind:'network',value:response.data}),fail:error => weappContainer.postMessage({kind:'networkFailure',error})});
-     else if(message.op === 'inspect') wx.createSelectorQuery().select('#sdk-scroll').boundingClientRect().exec(rects => weappContainer.postMessage({kind:'geometry',scroll:rects[0],tap:{x:40,y:80},...wx.getWindowInfo()}));
+     else if(message.op === 'inspect') wx.createSelectorQuery().select('#sdk-scroll').boundingClientRect().exec(rects => weappContainer.postMessage({kind:'geometry',scroll:rects[0],tap:{x:40,y:80},...observeWindow()}));
      else weappContainer.postMessage({kind:message.kind === 'recovered'?'recovered':'echo',message});
    };
    weappContainer.onMessage(this.listener);
@@ -71,7 +72,7 @@ Page({
  onShow() { this.setData({shows:this.data.shows+1}); weappContainer.postMessage({kind:'show',shows:this.data.shows,route:this.route}); },
  onHide() { weappContainer.postMessage({kind:'hide'}); },
  onUnload() { weappContainer.offMessage(this.listener); },
- onResize() { weappContainer.postMessage({kind:'resize',...wx.getWindowInfo()}); },
+ onResize() { weappContainer.postMessage({kind:'resize',...observeWindow()}); },
  onScroll(event) { weappContainer.postMessage({kind:'scroll',scrollTop:event.detail.scrollTop,scrollLeft:event.detail.scrollLeft}); },
  onTap() {
    this.setData({count:this.data.count+1}); wx.setStorageSync('sdk-count',this.data.count);
