@@ -8,6 +8,8 @@ Contract version `0.1.0-preview.7.0`, C ABI `1`. Public preview installation:
 npm install @weapp-container/sdk-contract@0.1.0-preview.7.0
 ```
 
+This version is public on npm with the `preview` tag. Future releases use trusted publishing from `weapp-container/sdk-contract` and `publish-npm.yml`. The publisher waits for registry metadata, exact archive bytes and the tag to propagate. If verification times out, run `node tools/publish-npm.mjs --receipt /absolute/build.json --verify-published` with the original receipt to verify the public artifact without uploading again.
+
 The package root exports types. Import tools from `@weapp-container/sdk-contract/runtime-artifacts` and `@weapp-container/sdk-contract/fixtures`. Public C headers are in `include/`. Native runtime implementations are distributed separately.
 
 ## Generate a loadable test pack

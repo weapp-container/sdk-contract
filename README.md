@@ -8,6 +8,8 @@ SDK 合约、C 头文件和运行库下载工具通过 npm 提供。历史私有
 npm install @weapp-container/sdk-contract@0.1.0-preview.7.0
 ```
 
+本版本已在 npm 公开发布，`preview` 标签指向该版本。后续发布由 `weapp-container/sdk-contract` 的 `publish-npm.yml` 使用 trusted publishing。注册源传播期间，发布工具会等待公开元数据、归档字节和标签；若等待超时，用原始构建回执执行 `node tools/publish-npm.mjs --receipt /absolute/build.json --verify-published`，只复验公开产物，不再次上传。
+
 类型入口为包根；工具分别从 `@weapp-container/sdk-contract/runtime-artifacts` 和 `@weapp-container/sdk-contract/fixtures` 导出。C 头文件位于 `include/`。此包不包含原生运行库。
 
 ## 生成可加载的测试 pack
