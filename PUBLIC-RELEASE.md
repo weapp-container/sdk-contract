@@ -27,3 +27,5 @@
 ## Contract 命令
 
 `node tools/package-public.mjs --out .runtime/public-npm` 创建 tarball 和构建回执。`node tools/publish-npm.mjs --receipt .runtime/public-npm/build.json` 验证归档；获授权发布时增加 `--execute`。工作流发布该精确归档，不重新打包。
+
+已接受上传后若注册源仍在传播，使用原始回执执行 `node tools/publish-npm.mjs --receipt .runtime/public-npm/build.json --verify-published`。该模式只检查公开元数据、归档原始字节和 `preview` 标签，不再次上传；已发布版本禁止重发。

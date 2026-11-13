@@ -8,7 +8,7 @@
 
 The current core builder and these source examples use preview.7. Core runtime, iOS, Desktop and public CocoaPods Specs downloads are available; npm, Maven Central and pub.dev publication is incomplete. Check the [release status](https://github.com/weapp-container/weapp-container/blob/main/docs/public-sdk-release.en.md) before using installation commands. Match wrapper and runtime versions. Source availability, package publication, compilation and device acceptance are recorded separately.
 
-First public publication is being prepared. Use these commands once this version is visible in its registry. Historical private archives and locks retain their original identities.
+Contract is public on npm and passed anonymous installation checks. See the release status above for the other SDKs. Historical private archives and locks retain their original identities.
 
 Contract version `0.1.0-preview.7.0`, C ABI `1`. Public preview installation:
 

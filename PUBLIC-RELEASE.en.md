@@ -27,3 +27,5 @@ Verify every archive SHA-256/size, architecture, dynamic dependency and license.
 ## Contract commands
 
 `node tools/package-public.mjs --out .runtime/public-npm` creates the tarball and build receipt. `node tools/publish-npm.mjs --receipt .runtime/public-npm/build.json` verifies it; append `--execute` for the authorized publication. The workflow publishes this exact archive without repacking.
+
+After an accepted upload, if the registry is still propagating, use the original receipt with `node tools/publish-npm.mjs --receipt .runtime/public-npm/build.json --verify-published`. This mode only checks public metadata, exact archive bytes and the `preview` tag; it does not upload again. Existing published versions must never be republished.

@@ -8,7 +8,7 @@
 
 当前核心构建器与本页源码示例均使用 preview.7。核心运行库、iOS、Desktop 及公开 CocoaPods Specs 已提供下载；npm、Maven Central 和 pub.dev 尚未全部发布。使用安装命令前先核对[发布状态](https://github.com/weapp-container/weapp-container/blob/main/docs/public-sdk-release.md)，不要混用不同版本的包装层与运行库。源码公开、包发布、编译通过和设备验收分别记录。
 
-首次公开发布正在准备；安装命令须在对应注册源出现本版本后使用。历史私有归档及其锁文件保持原样。
+Contract 已在 npm 公开发布并通过匿名安装验证。其他 SDK 的进度见上述发布状态。历史私有归档及其锁文件保持原样。
 
 契约包版本 `0.1.0-preview.7.0`，C ABI 保持 `1`。公开预览安装入口：
 
