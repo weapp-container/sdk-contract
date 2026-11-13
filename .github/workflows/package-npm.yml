@@ -15,6 +15,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
+      - name: Install the pinned semantic declaration checker
+        run: npm install --no-save --package-lock=false --ignore-scripts --no-audit --no-fund typescript@6.0.3
       - run: node tools/package-public.mjs --out .runtime/public-npm
       - uses: actions/upload-artifact@v4
         with:

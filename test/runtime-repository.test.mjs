@@ -10,6 +10,24 @@ import { downloadRuntimeArtifact, selectArtifact, RUNTIME_REPOSITORY,
 const bytes = Buffer.from('isolated migration fixture, not a runtime');
 const sha256 = createHash('sha256').update(bytes).digest('hex');
 const target = { platform: 'linux', arch: 'x86_64', component: 'runtime', abiVersion: 1 };
+test('the exported public lock closes all native and SDK dependencies at the package version', async () => {
+  const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));
+  const exported = pkg.exports['./runtime-artifacts.lock.json'];
+  assert.equal(exported, `./runtime-artifacts.${pkg.version}.lock.json`);
+  assert.ok(pkg.files.includes(exported.slice(2)));
+  const lock = JSON.parse(await readFile(new URL(`../${exported.slice(2)}`, import.meta.url)));
+  assert.equal(lock.runtimeVersion, pkg.version);
+  assert.equal(lock.abiVersion, 1);
+  assert.deepEqual(lock.source, { repository: RUNTIME_REPOSITORY, releaseTag: `runtime-v${pkg.version}` });
+  assert.equal(lock.artifacts.length, 14);
+  assert.equal(lock.artifacts.filter(a => a.component === 'runtime').length, 9);
+  for (const [component, platform, arch] of [
+    ['android-sdk', 'android', 'universal'], ['ios-sdk', 'ios', 'universal'],
+    ['desktop-sdk', 'macos', 'universal'], ['desktop-sdk', 'linux', 'x86_64'], ['desktop-sdk', 'windows', 'x86_64'],
+  ]) assert.equal(selectArtifact(lock, { component, platform, arch, version: pkg.version, abiVersion: 1 }).repository, RUNTIME_REPOSITORY);
+  const historical = await readFile(new URL('../runtime-artifacts.lock.json', import.meta.url));
+  assert.equal(createHash('sha256').update(historical).digest('hex'), 'ee393000b5726172755b24a31812f9b55051e710c2714edadb9b3ac287b95388');
+});
 function manifest(repository, version) {
   return { schemaVersion: 1, runtimeVersion: version, abiVersion: 1,
     source: { repository, releaseTag: `runtime-v${version}` },
