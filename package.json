@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "pack:check": "npm pack --dry-run --ignore-scripts",
-    "release:publish": "node tools/publish-npm.mjs"
+    "release:publish": "node tools/publish-npm.mjs",
+    "docs:check": "node tools/documentation/check.mjs && node tools/documentation/check-content.mjs"
   },
   "publishConfig": {
     "access": "public",

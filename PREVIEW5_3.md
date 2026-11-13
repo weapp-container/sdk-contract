@@ -1,33 +1,15 @@
-# preview.5.3 source requirements
+<a id="preview53-source-requirements"></a>
+# preview.5.3 源码要求
 
-This source requires independently produced native runtime and SDK archives at
-`0.1.0-preview.5.3`. C ABI remains 1. The prior preview.5.2 wrapper bundle and
-its native preview.5.1 producer remain immutable historical artifacts. This
-document grants no publication, simulator, hardware or parity acceptance.
+**简体中文** · [English](PREVIEW5_3.en.md)
 
-An accepted Skia frame now retains Session-owned layout provenance: exact page,
-input lifetime, logical host size, retained viewport and renderer revision. A
-coordinate transition withdraws this provenance before guest jobs can run. A
-new numeric revision, old GPU ACK, A-to-B-to-A resize, density repaint or surface
-recreation cannot mint new layout authority from old pixels. A fresh accepted
-layout still requires its own presentation acknowledgement.
 
-Scrolling and pure density repaint may carry previously valid layout into a
-new renderer revision; presenter retirement may carry the same coordinate
-system into a new input lifetime. Neither operation acknowledges presentation.
-A poisoned View remains ineligible and requires a new candidate Session.
-Template consumed-input metadata stays independent: an explicit accepted frame
-can own layout without falsely claiming to have executed a WXML template.
+该源码需要独立构建的原生运行时和 SDK 归档文件，位于 `0.1.0-preview.5.3`。C ABI 保持不变，仍为 1。此前的 preview.5.2 包装包及其原生 preview.5.1 生成器为不可变的历史遗迹。本文件不授予任何发布、模拟器、硬件或等效性接受权限。
 
-Native `SelectorQuery.in(pageOrComponent)` validates the actual registered
-receiver and its incarnation, including retirement before page-mirror
-publication. A delayed owned query cannot borrow a replacement instance or the
-new top page. Unowned legacy native timer queries remain supported; callers
-that need page ownership should use `.in(this)` with the real live instance.
-The native facade's local checks do not assert full official selector parity
-or replace the browser's independent presentation permits.
+当前接受的 Skia 帧仍保留会话（Session）所拥有的布局来源：精确的页面、输入生命周期、逻辑宿主尺寸、保留的视口和渲染器版本。坐标转换在客体作业运行前将撤回该来源。新的数值版本、旧的 GPU 确认、A 到 B 到 A 的尺寸调整、密度重绘或表面重建均不能从旧像素中生成新的布局权威。每个新的接受布局仍需拥有自己的呈现确认。
 
-The original preview.5 JSON layout, navigation, health and attempt contracts in
-`PREVIEW5.md` remain additive. No C function signature or guest messaging ABI
-changes. Exact archive SHA-256 pins must be installed only after those bytes
-are built and audited; an older lock must fail rather than fall back.
+滚动和纯密度重绘可能将先前有效的布局传递到新的渲染器版本；呈现器退役可能将相同的坐标系统传递到新的输入生命周期。这两种操作均不承认呈现。被污染的视图仍不具资格，必须重新创建一个新候选的会话。模板消耗的输入元数据保持独立：一个明确接受的帧可以拥有布局，但不得错误声称已执行过 WXML 模板。
+
+原生 `SelectorQuery.in(pageOrComponent)` 会验证实际注册的接收器及其实例，包括在页面镜像发布前的退役情况。延迟的拥有查询无法借用替代实例或新顶部页面。未被拥有的旧版原生定时器查询仍受支持；需要页面所有权的调用者应使用 `.in(this)` 并传入真实的实例。原生前端的本地检查不强制要求完整的官方选择器一致性，也不替代浏览器独立的呈现许可。
+
+原始的 preview.5 JSON 布局、导航、健康和尝试合约在 `PREVIEW5.md` 中仍保持可扩展性。C 函数签名或客体消息 ABI 无任何变更。确切的归档 SHA-256 校验码必须在这些字节构建并经过审计后才可安装；旧的锁必须失败，而非回退。
