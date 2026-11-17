@@ -1,0 +1,15 @@
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { assetEntry, cleanSource, run, versionOf } from './public-release.mjs';
+const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const args = process.argv.slice(2), index = args.indexOf('--out');
+const out = resolve(index < 0 ? join(root, '.runtime/public') : args[index + 1]);
+const sourceCommit = cleanSource(root);
+run('node', ['--test', 'test/*.test.mjs'], root);
+mkdirSync(out, {recursive:true});
+const [pack] = JSON.parse(run('npm', ['pack', '--ignore-scripts', '--json', '--pack-destination', out], root));
+if (cleanSource(root) !== sourceCommit) throw Error('Contract source changed during packaging');
+const receipt = {schemaVersion:1,sdkVersion:versionOf(root),sourceCommit,sourceDirty:false,...assetEntry(out,pack.filename),integrity:pack.integrity,published:false};
+writeFileSync(join(out,'build.json'), JSON.stringify(receipt,null,2)+'\n');
+console.log(JSON.stringify(receipt,null,2));

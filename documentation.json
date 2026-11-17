@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "repository": "weapp-container/sdk-contract",
+  "defaultLocale": "zh-CN",
+  "locales": [
+    "zh-CN",
+    "en"
+  ],
+  "pages": [
+    {
+      "id": "CONTRACT",
+      "zh": "CONTRACT.md",
+      "en": "CONTRACT.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "CONTRACT.md"
+      },
+      "reviewedChineseSummary": "SDK 合约 v1",
+      "reviewedChineseSha256": "86f9bb5000a236aabb540e684379acea2a5330baf3579b941056a207ace6faed",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "FLUTTER_PROTOCOL",
+      "zh": "FLUTTER_PROTOCOL.md",
+      "en": "FLUTTER_PROTOCOL.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "FLUTTER_PROTOCOL.md"
+      },
+      "reviewedChineseSummary": "Flutter 插件传输，预览版 4",
+      "reviewedChineseSha256": "6a7b2b754b100d9a53ee41fe57b52568efca54a919ad48b7fab1eb56a3dccfa1",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "OPEN_SOURCE",
+      "zh": "OPEN_SOURCE.md",
+      "en": "OPEN_SOURCE.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "OPEN_SOURCE.md"
+      },
+      "reviewedChineseSummary": "开源运行时集成",
+      "reviewedChineseSha256": "253d2545971cb8d03ebea4859913da305b00e0c902bdad63b5f643f32eaec77b",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "PREVIEW5",
+      "zh": "PREVIEW5.md",
+      "en": "PREVIEW5.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "PREVIEW5.md"
+      },
+      "reviewedChineseSummary": "开发播放器协议新增功能（预览版.5 源码）",
+      "reviewedChineseSha256": "84a1738bedfbf42065472a6b678006c54d9cebb8878bfa9aba302924fcd4159c",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "PREVIEW5_3",
+      "zh": "PREVIEW5_3.md",
+      "en": "PREVIEW5_3.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "PREVIEW5_3.md"
+      },
+      "reviewedChineseSummary": "preview.5.3 源码要求",
+      "reviewedChineseSha256": "00d8a5fc563e869e417109eeac8ae41c73391643683d87e36e478da149dacb17",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "PUBLIC-RELEASE",
+      "zh": "PUBLIC-RELEASE.md",
+      "en": "PUBLIC-RELEASE.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "PUBLIC-RELEASE.md"
+      },
+      "reviewedChineseSummary": "公开预览发行 0.1.0-preview.7.1",
+      "reviewedChineseSha256": "8587b4c2c914541a82eedaf0e215bdef722971c5ee7c1e988318752c6c88bdc9",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "README",
+      "zh": "README.md",
+      "en": "README.en.md",
+      "section": "overview",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "README.md"
+      },
+      "reviewedChineseSummary": "Weapp Container SDK 合约",
+      "reviewedChineseSha256": "28aae8dfe87efaceb12eb5caa25028ef72f7f995bb81093de1fbc8e1b37c15b6",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "tools/documentation/README",
+      "zh": "tools/documentation/README.md",
+      "en": "tools/documentation/README.en.md",
+      "section": "tools",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "tools/documentation/README.md"
+      },
+      "reviewedChineseSummary": "双语文档维护",
+      "reviewedChineseSha256": "6c0d12dd12a6cd4a1076e912f2a09d959772638769da314e76d1708cc7c5a64e",
+      "legacyHeadingIds": []
+    }
+  ],
+  "excluded": [],
+  "assets": []
+}
