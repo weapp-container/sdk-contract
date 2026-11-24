@@ -19,10 +19,11 @@ for (const [gitArgs, expected] of [[['status', '--porcelain', '--untracked-files
   if (result.status !== 0 || result.stdout.trim() !== expected) throw Error('npm publication must use its exact clean producer source');
 }
 if (args.includes('--execute')) {
+  const tag = pkg.version.includes('-') ? 'preview' : 'latest';
   const url = `https://registry.npmjs.org/${encodeURIComponent(pkg.name)}/${encodeURIComponent(pkg.version)}`;
   const prior = await fetch(url, { signal: AbortSignal.timeout(30000) });
   if (prior.status !== 404) throw Error(`Version already exists or registry availability cannot be established (${prior.status})`);
-  const flags = ['publish', archive, '--access', 'public', '--tag', 'preview'];
+  const flags = ['publish', archive, '--access', 'public', '--tag', tag];
   if (process.env.GITHUB_ACTIONS === 'true') flags.push('--provenance');
   const result = spawnSync('npm', flags, { cwd: root, stdio: 'inherit' });
   if (result.status !== 0) throw Error('npm publication failed; inspect authentication/namespace status before retrying');

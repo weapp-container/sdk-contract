@@ -5,6 +5,7 @@ export async function verifyNpmPublication(pkg, bytes, {
   attempts = 60,
   wait = () => new Promise(resolve => setTimeout(resolve, 5000)),
 } = {}) {
+  const tag = pkg.version.includes('-') ? 'preview' : 'latest';
   const base = `https://registry.npmjs.org/${encodeURIComponent(pkg.name)}`;
   const integrity = 'sha512-' + createHash('sha512').update(bytes).digest('base64');
   const pending = response => [404, 429].includes(response.status) || response.status >= 500;
@@ -19,11 +20,11 @@ export async function verifyNpmPublication(pkg, bytes, {
       if (archive.ok) {
         if (!Buffer.from(await archive.arrayBuffer()).equals(bytes)) throw Error('Registry npm archive bytes differ from the validated package; do not republish');
         const tags = await fetchImpl(`https://registry.npmjs.org/-/package/${encodeURIComponent(pkg.name)}/dist-tags`, { signal: AbortSignal.timeout(30000) });
-        if (!tags.ok && !pending(tags)) throw Error(`Cannot verify npm preview tag (${tags.status}); do not republish`);
-        if (tags.ok && (await tags.json()).preview === pkg.version) return { integrity, tag: 'preview' };
+        if (!tags.ok && !pending(tags)) throw Error(`Cannot verify npm ${tag} tag (${tags.status}); do not republish`);
+        if (tags.ok && (await tags.json())[tag] === pkg.version) return { integrity, tag };
       }
     }
     if (attempt + 1 < attempts) await wait();
   }
-  throw Error('Published version or preview tag is still propagating; use --verify-published with the original receipt later; do not republish');
+  throw Error(`Published version or ${tag} tag is still propagating; use --verify-published with the original receipt later; do not republish`);
 }

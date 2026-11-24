@@ -2,6 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { verifyNpmPublication } from '../tools/verify-npm-publication.mjs';
+import { releasePublication } from '../tools/public-release.mjs';
+
+test('release version selects a stable or preview GitHub channel', () => {
+  assert.deepEqual(releasePublication('0.1.0'), { preview: false, prerelease: false, latest: true, channel: 'stable' });
+  assert.deepEqual(releasePublication('0.1.0-preview.7.1'), { preview: true, prerelease: true, latest: false, channel: 'preview' });
+  assert.throws(() => releasePublication('preview'), /Invalid SDK release version/);
+});
 
 const pkg = { name: '@example/contract', version: '0.1.0-preview.7.0' };
 const bytes = Buffer.from('frozen verified npm archive');
@@ -22,6 +29,17 @@ test('waits for metadata, archive and preview tag propagation without publishing
   assert.equal(result.tag, 'preview');
   assert.equal(responses.length, 0);
   assert.equal(calls.length, 9);
+});
+
+test('stable npm releases are verified through the latest dist-tag', async () => {
+  const stablePackage = { ...pkg, version: '0.1.0' };
+  const stableMetadata = { ...stablePackage, dist: metadata.dist };
+  const responses = [json(stableMetadata), new Response(bytes), json({ latest: stablePackage.version })];
+  const result = await verifyNpmPublication(stablePackage, bytes, {
+    fetchImpl: async () => responses.shift(),
+  });
+  assert.equal(result.tag, 'latest');
+  assert.equal(responses.length, 0);
 });
 
 test('rejects changed registry bytes even when metadata claims the expected integrity', async () => {
