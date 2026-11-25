@@ -6,7 +6,7 @@
 <a id="public-distribution-candidate-preview7"></a>
 ## 公开发行候选：preview.7
 
-当前核心构建器与本页源码示例均使用 preview.7。核心运行库、iOS、Desktop 及公开 CocoaPods Specs 已提供下载；npm、Maven Central 和 pub.dev 尚未全部发布。使用安装命令前先核对[发布状态](https://github.com/weapp-container/weapp-container/blob/main/docs/public-sdk-release.md)，不要混用不同版本的包装层与运行库。源码公开、包发布、编译通过和设备验收分别记录。
+当前核心构建器与本页源码示例均使用 preview.7。核心运行库以及核心 prerelease 中的 iOS、Desktop SDK tarball 可匿名下载；`sdk-ios` / `sdk-desktop` 的独立 GitHub release 与 CocoaPods 固定归档尚未发布。npm、Maven Central 和 pub.dev 的发布进度以[发行状态](https://github.com/weapp-container/weapp-container/blob/main/docs/public-sdk-release.md)为准，不要把核心 prerelease 归档当作独立 SDK 包。源码公开、包发布、编译通过和设备验收分别记录。
 
 Contract 已在 npm 公开发布并通过匿名安装验证。其他 SDK 的进度见上述发布状态。历史私有归档及其锁文件保持原样。
 

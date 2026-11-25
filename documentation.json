@@ -94,8 +94,8 @@
         "repository": "weapp-container/sdk-contract",
         "path": "README.md"
       },
-      "reviewedChineseSummary": "Weapp Container SDK 合约",
-      "reviewedChineseSha256": "28aae8dfe87efaceb12eb5caa25028ef72f7f995bb81093de1fbc8e1b37c15b6",
+      "reviewedChineseSummary": "preview.7 SDK 合约说明、独立 iOS/Desktop 发行与核心归档边界",
+      "reviewedChineseSha256": "1c2ceb4c47da15257b6cd9d77630cdc45257f45055ffc995f099e4999442dfa3",
       "legacyHeadingIds": []
     },
     {

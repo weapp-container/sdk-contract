@@ -6,7 +6,7 @@
 <a id="公开发行候选preview7"></a>
 ## Public distribution candidate: preview.7
 
-The current core builder and these source examples use preview.7. Core runtime, iOS, Desktop and public CocoaPods Specs downloads are available; npm, Maven Central and pub.dev publication is incomplete. Check the [release status](https://github.com/weapp-container/weapp-container/blob/main/docs/public-sdk-release.en.md) before using installation commands. Match wrapper and runtime versions. Source availability, package publication, compilation and device acceptance are recorded separately.
+The current core builder and these source examples use preview.7. Core runtime and the iOS and Desktop SDK tarballs in the core prerelease are anonymously downloadable; standalone `sdk-ios` / `sdk-desktop` GitHub releases and fixed CocoaPods archives are not published. Check the [release status](https://github.com/weapp-container/weapp-container/blob/main/docs/public-sdk-release.en.md) for npm, Maven Central and pub.dev publication status. Do not treat a core prerelease archive as a standalone SDK package. Source availability, package publication, compilation and device acceptance are recorded separately.
 
 Contract is public on npm and passed anonymous installation checks. See the release status above for the other SDKs. Historical private archives and locks retain their original identities.
 
