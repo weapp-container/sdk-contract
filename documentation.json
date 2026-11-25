@@ -94,8 +94,21 @@
         "repository": "weapp-container/sdk-contract",
         "path": "README.md"
       },
-      "reviewedChineseSummary": "preview.7 SDK 合约说明、独立 iOS/Desktop 发行与核心归档边界",
-      "reviewedChineseSha256": "1c2ceb4c47da15257b6cd9d77630cdc45257f45055ffc995f099e4999442dfa3",
+      "reviewedChineseSummary": "SDK 合约、发行状态与构建示例索引",
+      "reviewedChineseSha256": "a3e83aa7cc14f8ab3c08f44ca742d82e7a758efd05594f07c6bd8ea162eef460",
+      "legacyHeadingIds": []
+    },
+    {
+      "id": "examples/consumer/README",
+      "zh": "examples/consumer/README.md",
+      "en": "examples/consumer/README.en.md",
+      "section": "examples",
+      "source": {
+        "repository": "weapp-container/sdk-contract",
+        "path": "examples/consumer/README.md"
+      },
+      "reviewedChineseSummary": "C ABI 宿主消费者示例的构建、主机调用和关闭生命周期",
+      "reviewedChineseSha256": "f7a3e7a86a04212a10e51c14f1161683b4dcb368bf5e91c0e7032567b732cac7",
       "legacyHeadingIds": []
     },
     {

@@ -147,6 +147,8 @@ Custom adapters create sessions with `weapp_container_sdk_session_new` and send 
 
 Initialize every result buffer to `{NULL, 0}`. Results are length-delimited UTF-8 JSON, not NUL-terminated strings. Release each with `weapp_container_sdk_buffer_free()` before reuse. Session operations must run on their creating thread without reentry. Stop rendering and detach the GPU surface before close or destruction. The synchronous C close function is only the final cleanup barrier. The header and adapter contract define the complete rules.
 
+The [runnable C ABI host consumer](examples/consumer/README.en.md) covers session creation, host-method completion, the event loop, first-frame inspection, and asynchronous shutdown. It is included in the npm package and links a native runtime built from the core repository. The package does not contain runtime binaries.
+
 <a id="按精确版本获取运行库"></a>
 ## Retrieve an exact runtime version
 

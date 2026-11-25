@@ -147,6 +147,8 @@ int main(void) {
 
 每次调用的结果缓冲区须初始化为 `{NULL, 0}`。结果是带长度的 UTF-8 JSON，并非以 NUL 结尾；使用后调用 `weapp_container_sdk_buffer_free()`，再复用缓冲区。会话操作不可重入，必须在创建线程执行。关闭或销毁前先停止渲染并分离 GPU surface；C 的同步 close 只用于最终清理。完整规则以头文件和适配协议为准。
 
+[可运行的 C ABI 宿主消费者](examples/consumer/README.md)覆盖会话创建、主机方法完成、事件循环、首帧检查和异步关闭，并随 npm 包发布。示例链接由核心仓库构建的原生运行库；此包不包含运行库二进制。
+
 <a id="retrieve-an-exact-runtime-version"></a>
 ## 按精确版本获取运行库
 

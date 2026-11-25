@@ -29,6 +29,7 @@
     "tools/runtime-artifacts.mjs",
     "tools/unpack-runtime.py",
     "fixtures",
+    "examples",
     "CONTRACT.md",
     "FLUTTER_PROTOCOL.md",
     "runtime-artifacts.schema.json",
