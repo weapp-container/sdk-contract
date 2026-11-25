@@ -94,8 +94,8 @@
         "repository": "weapp-container/sdk-contract",
         "path": "README.md"
       },
-      "reviewedChineseSummary": "SDK 合约、发行状态与构建示例索引",
-      "reviewedChineseSha256": "a3e83aa7cc14f8ab3c08f44ca742d82e7a758efd05594f07c6bd8ea162eef460",
+      "reviewedChineseSummary": "普通用户安装 npm 包和公开运行库工具，源码目录与运行库下载改为维护者流程",
+      "reviewedChineseSha256": "045e67aa8b003e8b6d644570fee0101d2f0c51c82daf1b850c223e2f706392d8",
       "legacyHeadingIds": []
     },
     {

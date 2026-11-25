@@ -20,17 +20,6 @@ This version is public on npm with the `preview` tag. Future releases use truste
 
 The package root exports types. Import tools from `@weapp-container/sdk-contract/runtime-artifacts` and `@weapp-container/sdk-contract/fixtures`. Public C headers are in `include/`. Native runtime implementations are distributed separately.
 
-<a id="已复核的源码构建版本"></a>
-### Reviewed source-build checkout
-
-```sh
-git clone https://github.com/weapp-container/sdk-contract.git sdk-contract-source
-cd sdk-contract-source
-git checkout 22cafeb56ac5d214c35fc513b1dbe5691e1b801d
-```
-
-
-
 [Documentation](https://container.weapp.dev/en/docs/) · [Source builds](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.en.md) · [APIs and protocols](https://github.com/weapp-container/sdk-contract/blob/main/README.en.md)
 
 Shared C ABI, TypeScript types, adapter protocols, test packs, and runtime retrieval tools for Weapp Container SDKs. Application developers should start with the [Android](https://github.com/weapp-container/sdk-android/blob/main/README.en.md), [iOS](https://github.com/weapp-container/sdk-ios/blob/main/README.en.md), [Desktop](https://github.com/weapp-container/sdk-desktop/blob/main/README.en.md), [Flutter](https://github.com/weapp-container/sdk-flutter/blob/main/README.en.md), or [React Native](https://github.com/weapp-container/sdk-react-native/blob/main/README.en.md) SDK. This repository primarily serves custom hosts, adapters, and build tools.
@@ -38,32 +27,14 @@ Shared C ABI, TypeScript types, adapter protocols, test packs, and runtime retri
 Source version: `0.1.0-preview.5.7`. C ABI: `1`. Source is open under Apache-2.0; runtime implementations and binaries are not included. New builds of the open-source runtime carry Apache-2.0. Download access does not grant binary usage rights; retain `RUNTIME-LICENSE` and third-party notices when distributing them.
 
 <a id="从当前源码开始"></a>
-## Start from current source
+## Maintainer source builds
 
-For a new integration, use the public core repository and its pinned SDK revisions. This path needs no historical archive download token:
-
-```sh
-git clone --recurse-submodules https://github.com/weapp-container/weapp-container.git
-cd weapp-container
-corepack enable
-pnpm install --frozen-lockfile
-node sdk/contract/fixtures/make-acceptance-pack.mjs --out artifacts/hello-pack
-```
-
-Follow the [source build guide](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.en.md) to prepare the target runtime and notices, then use this SDK's packaging tools. Platform toolchains remain prerequisites. Public source does not imply that prebuilt packages are available from a public registry. Native mini-program directories and existing framework builds can be packaged independently; weapp-vite is optional.
-
-The remaining sections describe standalone SDK installation, views, and lifecycle. Commands using `prepare-runtime` or `prepare-native` select the explicit archive path and require a reviewed matching manifest. Historical default locks may be unavailable; see the migration section at the end.
+Normal applications should install the npm package above. When maintaining the protocol, rebuilding tools, or updating release manifests, use a maintainer-prepared checkout and follow the [source build guide](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.en.md). This package contains protocol types, C headers and test tools, not a native runtime library.
 
 <a id="获取与目录"></a>
-## Checkout and files
+## Maintainer source files
 
-Tools require Node.js 24.x; runtime archive installation also needs Python 3. There are no npm dependencies to install.
-
-```sh
-git clone https://github.com/weapp-container/sdk-contract.git
-cd sdk-contract
-git checkout 22cafeb56ac5d214c35fc513b1dbe5691e1b801d
-```
+Normal applications do not need a source checkout. Maintainer tools require Node.js 24.x; installing runtime archives also needs Python 3.
 
 | File | Purpose |
 | --- | --- |
@@ -81,7 +52,7 @@ git checkout 22cafeb56ac5d214c35fc513b1dbe5691e1b801d
 This needs no runtime, private source, or compiler:
 
 ```sh
-node fixtures/make-acceptance-pack.mjs --out /tmp/sdk-acceptance-pack
+node --input-type=module -e "import { makeAcceptancePack } from '@weapp-container/sdk-contract/fixtures'; makeAcceptancePack('/tmp/sdk-acceptance-pack')"
 ```
 
 Pass the resulting directory to your platform SDK's `load` API. It contains `manifest.json` and `blobs/sha256/`, with pages for tap counts, scrolling, and host messaging.
@@ -89,7 +60,7 @@ Pass the resulting directory to your platform SDK's `load` API. It contains `man
 You can also call it from Node.js:
 
 ```js
-import { makeAcceptancePack } from './fixtures/make-acceptance-pack.mjs';
+import { makeAcceptancePack } from '@weapp-container/sdk-contract/fixtures';
 
 const integrityRoot = makeAcceptancePack('/absolute/sdk-acceptance-pack');
 console.log(integrityRoot);
@@ -154,11 +125,11 @@ The [runnable C ABI host consumer](examples/consumer/README.en.md) covers sessio
 
 The [public lock](runtime-artifacts.0.1.0-preview.7.1.lock.json) pins the archives, sizes and SHA-256 hashes for `0.1.0-preview.7.1` from the core `runtime-v0.1.0-preview.7.1` Release. Downloads support anonymous access. The [historical lock](runtime-artifacts.lock.json) remains unchanged.
 
-From a source checkout, retrieve the iOS arm64 runtime using the public lock:
+From the root of a Node.js project with this npm package installed, retrieve the iOS arm64 runtime using the public lock:
 
 ```sh
-node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.0.1.0-preview.7.1.lock.json --version 0.1.0-preview.7.1 \
+node node_modules/@weapp-container/sdk-contract/tools/runtime-artifacts.mjs \
+  --manifest node_modules/@weapp-container/sdk-contract/runtime-artifacts.0.1.0-preview.7.1.lock.json --version 0.1.0-preview.7.1 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads \
   --install-dir .runtime/native/aarch64-apple-ios

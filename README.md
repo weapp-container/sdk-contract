@@ -20,17 +20,6 @@ npm install @weapp-container/sdk-contract@0.1.0-preview.7.1
 
 类型入口为包根；工具分别从 `@weapp-container/sdk-contract/runtime-artifacts` 和 `@weapp-container/sdk-contract/fixtures` 导出。C 头文件位于 `include/`。此包不包含原生运行库。
 
-<a id="reviewed-source-build-checkout"></a>
-### 已复核的源码构建版本
-
-```sh
-git clone https://github.com/weapp-container/sdk-contract.git sdk-contract-source
-cd sdk-contract-source
-git checkout 22cafeb56ac5d214c35fc513b1dbe5691e1b801d
-```
-
-
-
 [开发文档](https://container.weapp.dev/docs/) · [源码构建](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.md) · [API 与协议](https://github.com/weapp-container/sdk-contract/blob/main/README.md)
 
 Weapp Container 各端 SDK 共用的 C ABI、TypeScript 类型、适配协议、测试 pack 和运行库下载工具。应用开发优先使用 [Android](https://github.com/weapp-container/sdk-android/blob/main/README.md)、[iOS](https://github.com/weapp-container/sdk-ios/blob/main/README.md)、[Desktop](https://github.com/weapp-container/sdk-desktop/blob/main/README.md)、[Flutter](https://github.com/weapp-container/sdk-flutter/blob/main/README.md) 或 [React Native](https://github.com/weapp-container/sdk-react-native/blob/main/README.md) SDK；本仓库主要供自研宿主、适配器及构建工具使用。
@@ -38,32 +27,14 @@ Weapp Container 各端 SDK 共用的 C ABI、TypeScript 类型、适配协议、
 已复核源码示例版本：`0.1.0-preview.7.1`，C ABI：`1`。源码按 Apache-2.0 开源，不包含运行库实现或二进制。当前运行库源码采用 Apache-2.0，分发时须保留 `RUNTIME-LICENSE` 和第三方声明。
 
 <a id="start-from-current-source"></a>
-## 从当前源码开始
+## 维护者源码构建
 
-首次接入优先使用公开的核心仓库及其固定 SDK 提交，不需要历史归档的下载 token：
-
-```sh
-git clone --recurse-submodules https://github.com/weapp-container/weapp-container.git
-cd weapp-container
-corepack enable
-pnpm install --frozen-lockfile
-node sdk/contract/fixtures/make-acceptance-pack.mjs --out artifacts/hello-pack
-```
-
-随后按[源码构建说明](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.md)准备目标平台的运行库和 notices，再用本仓库的构建工具生成接入包。平台工具链仍是必要依赖；源码公开不表示公共包仓库已有可下载的二进制。已有原生小程序或框架构建产物可以由独立 portable pack 工具打包，不要求 weapp-vite。
-
-下面保留独立 SDK 的安装、视图与生命周期说明。涉及 `prepare-runtime` / `prepare-native` 的命令属于显式归档路径，必须使用核验过的配套 manifest；历史默认锁可能无法下载，详见文末说明。
+普通应用直接安装上面的 npm 包。需要修改协议、重建工具或维护发行清单时，才按[源码构建说明](https://github.com/weapp-container/weapp-container/blob/main/docs/sdk-source-build.md)使用维护者 checkout。此包只提供协议类型、C 头文件和测试工具，不包含原生运行库。
 
 <a id="checkout-and-files"></a>
-## 获取与目录
+## 维护者源码目录
 
-工具需要 Node.js 24.x，安装运行库归档还需要 Python 3；无需安装 npm 依赖。
-
-```sh
-git clone https://github.com/weapp-container/sdk-contract.git
-cd sdk-contract
-git checkout 22cafeb56ac5d214c35fc513b1dbe5691e1b801d
-```
+普通应用无需下载或 checkout 源码。维护者工具需要 Node.js 24.x，安装运行库归档还需要 Python 3。
 
 | 文件 | 用途 |
 | --- | --- |
@@ -81,7 +52,7 @@ git checkout 22cafeb56ac5d214c35fc513b1dbe5691e1b801d
 这一步不需要运行库、私有源码或编译器：
 
 ```sh
-node fixtures/make-acceptance-pack.mjs --out /tmp/sdk-acceptance-pack
+node --input-type=module -e "import { makeAcceptancePack } from '@weapp-container/sdk-contract/fixtures'; makeAcceptancePack('/tmp/sdk-acceptance-pack')"
 ```
 
 将生成的目录传给平台 SDK 的 `load` 接口。目录包含 `manifest.json` 和 `blobs/sha256/`，页面提供点击计数、滚动及宿主消息交互。
@@ -89,7 +60,7 @@ node fixtures/make-acceptance-pack.mjs --out /tmp/sdk-acceptance-pack
 也可在 Node.js 工具中调用：
 
 ```js
-import { makeAcceptancePack } from './fixtures/make-acceptance-pack.mjs';
+import { makeAcceptancePack } from '@weapp-container/sdk-contract/fixtures';
 
 const integrityRoot = makeAcceptancePack('/absolute/sdk-acceptance-pack');
 console.log(integrityRoot);
@@ -154,11 +125,11 @@ int main(void) {
 
 当前 [公开锁文件](runtime-artifacts.0.1.0-preview.7.1.lock.json) 固定 `0.1.0-preview.7.1` 的归档、大小和 SHA-256，来源为主仓库 `runtime-v0.1.0-preview.7.1` Release，可匿名下载。原 [历史锁文件](runtime-artifacts.lock.json) 保持原样。
 
-在源码检出中，可按公开锁获取 iOS arm64 运行库：
+在已安装此 npm 包的 Node.js 项目根目录，可按公开锁获取 iOS arm64 运行库：
 
 ```sh
-node tools/runtime-artifacts.mjs \
-  --manifest runtime-artifacts.0.1.0-preview.7.1.lock.json --version 0.1.0-preview.7.1 \
+node node_modules/@weapp-container/sdk-contract/tools/runtime-artifacts.mjs \
+  --manifest node_modules/@weapp-container/sdk-contract/runtime-artifacts.0.1.0-preview.7.1.lock.json --version 0.1.0-preview.7.1 \
   --component runtime --platform ios --arch arm64-device --abi 1 \
   --out-dir .runtime/downloads \
   --install-dir .runtime/native/aarch64-apple-ios
